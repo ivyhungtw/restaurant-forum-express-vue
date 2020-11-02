@@ -21,8 +21,10 @@
   "dependencies": {
     "chai": "^4.2.0",
     "express": "^4.17.1",
+    "mocha": "^8.2.0",
     "mysql2": "^2.2.5",
     "sequelize": "^6.3.5",
+    "sequelize-cli": "^6.2.0",
     "sinon": "^9.2.0",
     "supertest": "^5.0.0"
   }
