@@ -53,11 +53,11 @@ describe('# A17: 使用者權限管理', function() {
       await db.User.create({name: 'User1', isAdmin: false})
     })
 
-    it(" PUT /admin/users/:id ", (done) => {
+    it(" PUT /admin/users/:id/toggleAdmin ", (done) => {
         db.User.findByPk(1).then(user => {
           user.isAdmin.should.equal(false);
           request(app)
-            .put('/admin/users/1')
+            .put('/admin/users/1/toggleAdmin')
             .type("form")
             .end(function(err, res) {
               db.User.findByPk(1).then(user => {
