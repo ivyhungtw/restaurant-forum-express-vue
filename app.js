@@ -7,8 +7,7 @@ const port = 3000
 app.engine(
   'handlebars',
   handlebars({
-    defaultLayout: 'main',
-    extname: '.hbs'
+    defaultLayout: 'main'
   })
 )
 app.set('view engine', 'handlebars')
