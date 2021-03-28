@@ -1,5 +1,6 @@
 const express = require('express')
 const handlebars = require('express-handlebars')
+const bodyParser = require('body-parser')
 
 require('./models')
 
@@ -13,6 +14,7 @@ app.engine(
   })
 )
 app.set('view engine', 'handlebars')
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.listen(port, () => {
   console.log(`App is listening at http://localhost:${port}`)
