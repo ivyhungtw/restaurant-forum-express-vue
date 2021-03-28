@@ -2,12 +2,20 @@ const restController = require('../controllers/restController')
 const adminController = require('../controllers/adminController.js')
 const userController = require('../controllers/userController.js')
 
-module.exports = (app, passport) => {
-  app.get('/', (req, res) => res.redirect('/restaurants'))
-  app.get('/restaurants', restController.getRestaurants)
+const { authenticateUser, authenticateAdmin } = require('../middleware/auth')
 
-  app.get('/admin', (req, res) => res.redirect('/admin/restaurants'))
-  app.get('/admin/restaurants', adminController.getRestaurants)
+module.exports = (app, passport) => {
+  app.get('/', authenticateUser, (req, res) => res.redirect('/restaurants'))
+  app.get('/restaurants', authenticateUser, restController.getRestaurants)
+
+  app.get('/admin', authenticateAdmin, (req, res) =>
+    res.redirect('/admin/restaurants')
+  )
+  app.get(
+    '/admin/restaurants',
+    authenticateAdmin,
+    adminController.getRestaurants
+  )
 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
