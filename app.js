@@ -5,6 +5,7 @@ const flash = require('connect-flash')
 const session = require('express-session')
 
 require('./models')
+const passport = require('./config/passport')
 
 const app = express()
 const port = 3000
@@ -18,6 +19,8 @@ app.engine(
 app.set('view engine', 'handlebars')
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
+app.use(passport.initialize())
+app.use(passport.session())
 app.use(flash())
 
 app.use((req, res, next) => {
@@ -31,6 +34,6 @@ app.listen(port, () => {
   console.log(`App is listening at http://localhost:${port}`)
 })
 
-require('./routes')(app)
+require('./routes')(app, passport)
 
 module.exports = app
