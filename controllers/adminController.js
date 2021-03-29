@@ -30,6 +30,10 @@ const adminController = {
   getRestaurant: async (req, res) => {
     const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
     return res.render('admin/restaurant', { restaurant })
+  },
+  editRestaurant: async (req, res) => {
+    const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+    return res.render('admin/create', { restaurant })
   }
 }
 
