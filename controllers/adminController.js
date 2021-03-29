@@ -8,6 +8,24 @@ const adminController = {
   },
   createRestaurant: (req, res) => {
     return res.render('admin/create')
+  },
+  postRestaurant: async (req, res) => {
+    const { name, tel, address, opening_hours, description } = req.body
+    if (!name || !tel || !address || !opening_hours || !description) {
+      req.flash('errorMsg', 'All fields are required!')
+      return res.render('admin/create', {
+        name,
+        tel,
+        address,
+        opening_hours,
+        description
+      })
+    }
+
+    await Restaurant.create({ name, tel, address, opening_hours, description })
+
+    req.flash('successMsg', 'Restaurant was created successfully')
+    res.redirect('/admin/restaurants')
   }
 }
 
