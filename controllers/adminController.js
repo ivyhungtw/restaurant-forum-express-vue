@@ -11,9 +11,11 @@ const adminController = {
   },
   postRestaurant: async (req, res) => {
     const { name, tel, address, opening_hours, description } = req.body
+    const errors = []
     if (!name || !tel || !address || !opening_hours || !description) {
-      req.flash('errorMsg', 'All fields are required!')
+      errors.push({ message: 'All fields are required!' })
       return res.render('admin/create', {
+        errors,
         name,
         tel,
         address,
@@ -34,6 +36,23 @@ const adminController = {
   editRestaurant: async (req, res) => {
     const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
     return res.render('admin/create', { restaurant })
+  },
+  putRestaurant: async (req, res) => {
+    const { name, tel, address, opening_hours, description } = req.body
+    if (!name || !tel || !address || !opening_hours || !description) {
+      req.flash('errorMsg', 'All fields are required!')
+      return res.redirect('back')
+    }
+
+    const restaurant = await Restaurant.findByPk(req.params.id)
+    await restaurant.update({ name, tel, address, opening_hours, description })
+    req.flash('successMsg', 'restaurant was updated successfully!')
+    res.redirect('/admin/restaurants')
+  },
+  deleteRestaurant: async (req, res) => {
+    const restaurant = await Restaurant.findByPk(req.params.id)
+    await restaurant.destroy()
+    res.redirect('/admin/restaurants')
   }
 }
 
