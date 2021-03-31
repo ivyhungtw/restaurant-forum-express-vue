@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
 
+const helpers = require('../_helpers')
+
 const userController = {
   signUpPage: (req, res) => {
     return res.render('signup')
@@ -79,6 +81,15 @@ const userController = {
     req.flash('successMsg', 'Logout successfully!')
     req.logout()
     res.redirect('/signin')
+  },
+
+  getUser: async (req, res) => {
+    try {
+      const user = await User.findByPk(helpers.getUser(req).id)
+      res.render('user', { user: user.toJSON() })
+    } catch (err) {
+      console.log(err)
+    }
   }
 }
 
