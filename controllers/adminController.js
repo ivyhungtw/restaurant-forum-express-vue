@@ -9,8 +9,12 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const adminController = {
   getRestaurants: async (req, res) => {
-    const restaurants = await Restaurant.findAll({ raw: true })
-    return res.render('admin/restaurants', { restaurants })
+    try {
+      const restaurants = await Restaurant.findAll({ raw: true })
+      return res.render('admin/restaurants', { restaurants })
+    } catch (err) {
+      console.log(err)
+    }
   },
   createRestaurant: (req, res) => {
     return res.render('admin/create')
@@ -63,12 +67,20 @@ const adminController = {
     }
   },
   getRestaurant: async (req, res) => {
-    const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
-    return res.render('admin/restaurant', { restaurant })
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      return res.render('admin/restaurant', { restaurant })
+    } catch (err) {
+      console.log(err)
+    }
   },
   editRestaurant: async (req, res) => {
-    const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
-    return res.render('admin/create', { restaurant })
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      return res.render('admin/create', { restaurant })
+    } catch (err) {
+      console.log(err)
+    }
   },
   putRestaurant: async (req, res) => {
     const { name, tel, address, opening_hours, description } = req.body
@@ -117,25 +129,37 @@ const adminController = {
     }
   },
   deleteRestaurant: async (req, res) => {
-    const restaurant = await Restaurant.findByPk(req.params.id)
-    await restaurant.destroy()
-    res.redirect('/admin/restaurants')
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id)
+      await restaurant.destroy()
+      res.redirect('/admin/restaurants')
+    } catch (err) {
+      console.log(err)
+    }
   },
   getUsers: async (req, res) => {
-    const users = await User.findAll({ raw: true })
-    res.render('admin/users', { users })
+    try {
+      const users = await User.findAll({ raw: true })
+      res.render('admin/users', { users })
+    } catch (err) {
+      console.log(err)
+    }
   },
   toggleAdmin: async (req, res) => {
-    const user = await User.findByPk(req.params.id)
-    await user.update({ ...user, isAdmin: user.isAdmin ? 0 : 1 })
-    req.flash(
-      'successMsg',
-      `User ${user.name} was updated to ${
-        user.isAdmin ? 'admin' : 'user'
-      } successfully`
-    )
+    try {
+      const user = await User.findByPk(req.params.id)
+      await user.update({ ...user, isAdmin: user.isAdmin ? 0 : 1 })
+      req.flash(
+        'successMsg',
+        `User ${user.name} was updated to ${
+          user.isAdmin ? 'admin' : 'user'
+        } successfully`
+      )
 
-    res.redirect('/admin/users')
+      res.redirect('/admin/users')
+    } catch (err) {
+      console.log(err)
+    }
   }
 }
 
