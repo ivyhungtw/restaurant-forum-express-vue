@@ -7,6 +7,8 @@ const imgur = require('imgur-node-api')
 const userController = require('./userController')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
+const helpers = require('../_helpers')
+
 const adminController = {
   getRestaurants: async (req, res) => {
     try {
@@ -140,7 +142,7 @@ const adminController = {
   getUsers: async (req, res) => {
     try {
       const users = await User.findAll({ raw: true })
-      res.render('admin/users', { users })
+      res.render('admin/users', { users, id: helpers.getUser(req).id })
     } catch (err) {
       console.log(err)
     }

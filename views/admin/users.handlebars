@@ -27,7 +27,7 @@
       <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
       <td>
         <form action="/admin/users/{{this.id}}/toggleAdmin?_method=PUT" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link">
+          <button type="submit" class="btn btn-link" {{#if (eq ../id this.id)}}disabled{{/if}}>
             {{#if this.isAdmin}}set as user{{else}}set as admin{{/if}}
           </button>
         </form>

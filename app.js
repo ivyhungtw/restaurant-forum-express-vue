@@ -10,6 +10,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const helpers = require('./_helpers')
 require('./models')
+require('./utils/handlebars-helper')
 const passport = require('./config/passport')
 
 const app = express()
