@@ -14,6 +14,7 @@ module.exports = (app, passport) => {
   app.get('/admin', authenticateAdmin, (req, res) =>
     res.redirect('/admin/restaurants')
   )
+  app.get('/admin/users', authenticateAdmin, adminController.getUsers)
   app.get(
     '/admin/restaurants',
     authenticateAdmin,
@@ -29,6 +30,11 @@ module.exports = (app, passport) => {
     authenticateAdmin,
     upload.single('image'),
     adminController.postRestaurant
+  )
+  app.put(
+    '/admin/users/:id/toggleAdmin',
+    authenticateAdmin,
+    adminController.toggleAdmin
   )
   app.get(
     '/admin/restaurants/:id',

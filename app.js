@@ -8,6 +8,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 
+const helpers = require('./_helpers')
 require('./models')
 const passport = require('./config/passport')
 
@@ -33,7 +34,7 @@ app.use((req, res, next) => {
   res.locals.successMsg = req.flash('successMsg')
   res.locals.errorMsg = req.flash('errorMsg')
   res.locals.warningMsg = req.flash('warningMsg')
-  res.locals.user = req.user
+  res.locals.user = helpers.getUser(req)
   next()
 })
 
