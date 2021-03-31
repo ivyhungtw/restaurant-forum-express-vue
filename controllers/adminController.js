@@ -59,29 +59,6 @@ const adminController = {
         return res.redirect('/admin/restaurants')
       })
     }
-
-    // try {
-    //   // Files stored in /temp through multer middleware will be removed in the future,
-    //   // so I need to keep the successfully uploaded image in /upload
-    //   if (file) {
-    //     const data = await fs.readFile(file.path)
-    //     await fs.writeFile(`upload/${file.originalname}`, data)
-    //   }
-
-    //   await Restaurant.create({
-    //     name,
-    //     tel,
-    //     address,
-    //     opening_hours,
-    //     description,
-    //     image: file ? `/upload/${file.originalname}` : null
-    //   })
-
-    //   req.flash('successMsg', 'Restaurant was created successfully')
-    //   return res.redirect('/admin/restaurants')
-    // } catch (err) {
-    //   console.log(err)
-    // }
   },
   getRestaurant: async (req, res) => {
     const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
@@ -100,26 +77,41 @@ const adminController = {
       return res.redirect('back')
     }
 
-    try {
-      if (file) {
-        const data = await fs.readFile(file.path)
-        await fs.writeFile(`upload/${file.originalname}`, data)
-      }
-
-      const restaurant = await Restaurant.findByPk(req.params.id)
-      await restaurant.update({
-        name,
-        tel,
-        address,
-        opening_hours,
-        description,
-        image: file ? `/upload/${file.originalname}` : restaurant.image
+    if (file) {
+      imgur.setClientID(IMGUR_CLIENT_ID)
+      imgur.upload(file.path, (err, img) => {
+        return Restaurant.findByPk(req.params.id).then(restaurant => {
+          restaurant
+            .update({
+              name,
+              tel,
+              address,
+              opening_hours,
+              description,
+              image: file ? img.data.link : restaurant.image
+            })
+            .then(restaurant => {
+              req.flash('successMsg', 'Restaurant was updated successfully')
+              res.redirect('/admin/restaurants')
+            })
+        })
       })
-
-      req.flash('successMsg', 'restaurant was updated successfully!')
-      res.redirect('/admin/restaurants')
-    } catch (err) {
-      console.log(err)
+    } else {
+      return Restaurant.findByPk(req.params.id).then(restaurant => {
+        restaurant
+          .update({
+            name,
+            tel,
+            address,
+            opening_hours,
+            description,
+            image: restaurant.image
+          })
+          .then(restaurant => {
+            req.flash('successMsg', 'Restaurant was updated successfully')
+            res.redirect('/admin/restaurants')
+          })
+      })
     }
   },
   deleteRestaurant: async (req, res) => {
