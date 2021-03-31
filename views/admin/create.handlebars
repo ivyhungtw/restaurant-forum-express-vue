@@ -6,12 +6,12 @@
 {{/if}}
   <div class="form-group">
     <label for="name">Name</label>
-    <input type="text" class="form-control" name="name" id="name" maxlength="12" placeholder="Enter name" {{#if restaurant}}value="{{restaurant.name}}"{{else}}value="{{name}}"{{/if}} autofocus>
+    <input type="text" class="form-control" name="name" id="name" maxlength="12" placeholder="Enter name" {{#if restaurant}}value="{{restaurant.name}}"{{else}}value="{{name}}"{{/if}} required autofocus>
   </div>
 
   <div class="form-group">
     <label for="tel">Tel</label>
-    <input type="tel" class="form-control" name="tel" id="tel" minlength="9" maxlength="13" placeholder="ex: 02 6666 6666" {{#if restaurant}}value="{{restaurant.tel}}"{{else}}value="{{tel}}"{{/if}} required>
+    <input type="tel" class="form-control" name="tel" id="tel" pattern="[0-9]{9,13}" placeholder="ex: 02 6666 6666" {{#if restaurant}}value="{{restaurant.tel}}"{{else}}value="{{tel}}"{{/if}} required>
   </div>
 
   <div class="form-group">
