@@ -9,6 +9,17 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const helpers = require('../_helpers')
 
+const uploadImg = path => {
+  return new Promise((resolve, reject) => {
+    imgur.upload(path, (err, img) => {
+      if (err) {
+        return reject(err)
+      }
+      resolve(img)
+    })
+  })
+}
+
 const adminController = {
   getRestaurants: async (req, res) => {
     try {
@@ -24,7 +35,9 @@ const adminController = {
   postRestaurant: async (req, res) => {
     const { name, tel, address, opening_hours, description } = req.body
     const { file } = req
+    let img
     const errors = []
+
     if (!name || !tel || !address || !opening_hours || !description) {
       errors.push({ message: 'All fields are required!' })
       return res.render('admin/create', {
@@ -39,33 +52,25 @@ const adminController = {
 
     // Files stored in /temp through multer middleware will be removed in the future,
     // so I need to keep the successfully uploaded image by uploading to imgur through API
-    if (file) {
-      imgur.setClientID(IMGUR_CLIENT_ID)
-      imgur.upload(file.path, (err, img) => {
-        return Restaurant.create({
-          name,
-          tel,
-          address,
-          opening_hours,
-          description,
-          image: file ? img.data.link : null
-        }).then(restaurant => {
-          req.flash('successMsg', 'Restaurant was created successfully')
-          return res.redirect('/admin/restaurants')
-        })
-      })
-    } else {
-      return Restaurant.create({
+    try {
+      if (file) {
+        imgur.setClientID(IMGUR_CLIENT_ID)
+        img = await uploadImg(file.path)
+      }
+
+      await Restaurant.create({
         name,
         tel,
         address,
         opening_hours,
         description,
-        image: null
-      }).then(restaurant => {
-        req.flash('successMsg', 'Restaurant was created successfully')
-        return res.redirect('/admin/restaurants')
+        image: file ? img.data.link : null
       })
+
+      req.flash('successMsg', 'Restaurant was created successfully')
+      return res.redirect('/admin/restaurants')
+    } catch (err) {
+      console.log(err)
     }
   },
   getRestaurant: async (req, res) => {
@@ -87,47 +92,34 @@ const adminController = {
   putRestaurant: async (req, res) => {
     const { name, tel, address, opening_hours, description } = req.body
     const { file } = req
+    let img
 
     if (!name || !tel || !address || !opening_hours || !description) {
       req.flash('errorMsg', 'All fields are required!')
       return res.redirect('back')
     }
 
-    if (file) {
-      imgur.setClientID(IMGUR_CLIENT_ID)
-      imgur.upload(file.path, (err, img) => {
-        return Restaurant.findByPk(req.params.id).then(restaurant => {
-          restaurant
-            .update({
-              name,
-              tel,
-              address,
-              opening_hours,
-              description,
-              image: file ? img.data.link : restaurant.image
-            })
-            .then(restaurant => {
-              req.flash('successMsg', 'Restaurant was updated successfully')
-              res.redirect('/admin/restaurants')
-            })
-        })
+    try {
+      if (file) {
+        imgur.setClientID(IMGUR_CLIENT_ID)
+        img = await uploadImg(file.path)
+      }
+
+      const restaurant = await Restaurant.findByPk(req.params.id)
+
+      await restaurant.update({
+        name,
+        tel,
+        address,
+        opening_hours,
+        description,
+        image: file ? img.data.link : restaurant.image
       })
-    } else {
-      return Restaurant.findByPk(req.params.id).then(restaurant => {
-        restaurant
-          .update({
-            name,
-            tel,
-            address,
-            opening_hours,
-            description,
-            image: restaurant.image
-          })
-          .then(restaurant => {
-            req.flash('successMsg', 'Restaurant was updated successfully')
-            res.redirect('/admin/restaurants')
-          })
-      })
+
+      req.flash('successMsg', 'Restaurant was updated successfully')
+      return res.redirect('/admin/restaurants')
+    } catch (err) {
+      console.log(err)
     }
   },
   deleteRestaurant: async (req, res) => {
