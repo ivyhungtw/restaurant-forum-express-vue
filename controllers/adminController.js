@@ -145,6 +145,13 @@ const adminController = {
   toggleAdmin: async (req, res) => {
     try {
       const user = await User.findByPk(req.params.id)
+      const adminId = helpers.getUser(req).id
+
+      // Prevent admins from setting themselves as user
+      if (adminId === user.id) {
+        return res.redirect('/admin/users')
+      }
+
       await user.update({ ...user, isAdmin: user.isAdmin ? 0 : 1 })
       req.flash(
         'successMsg',
