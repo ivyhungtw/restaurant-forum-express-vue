@@ -11,12 +11,12 @@
 
   <div class="form-group">
     <label for="tel">Tel</label>
-    <input type="tel" class="form-control" name="tel" id="tel" pattern="[0-9]{9,13}" placeholder="ex: 02 6666 6666" {{#if restaurant}}value="{{restaurant.tel}}"{{else}}value="{{tel}}"{{/if}} required>
+    <input type="tel" class="form-control" name="tel" id="tel" pattern="[0-9]{2,4}[ ]?[0-9]{3,4}[ ]?[0-9]{3,4}" minlength="10" maxlength="12" placeholder="ex: 02 6666 6666" {{#if restaurant}}value="{{restaurant.tel}}"{{else}}value="{{tel}}"{{/if}} required onchange="this.value = this.value.trim();">
   </div>
 
   <div class="form-group">
     <label for="address">Address</label>
-    <input type="text" class="form-control" name="address" id="address" placeholder="Enter address" {{#if restaurant}}value="{{restaurant.address}}"{{else}}value="{{address}}"{{/if}} required>
+    <input type="text" class="form-control" name="address" id="address" placeholder="Enter address" {{#if restaurant}}value="{{restaurant.address}}"{{else}}value="{{address}}"{{/if}} maxlength="50" required>
   </div>
 
   <div class="form-group">
@@ -26,7 +26,7 @@
 
   <div class="form-group">
     <label for="description">Description</label>
-    <textarea class="form-control" id="description" name="description" rows="3" required>{{#if restaurant}}{{restaurant.description}}{{else}}{{description}}{{/if}}</textarea>
+    <textarea class="form-control" id="description" name="description" rows="3" maxlength="500" required>{{#if restaurant}}{{restaurant.description}}{{else}}{{description}}{{/if}}</textarea>
   </div>
 
   <div class="form-group">
