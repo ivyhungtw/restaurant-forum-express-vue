@@ -23,7 +23,10 @@ const uploadImg = path => {
 const adminController = {
   getRestaurants: async (req, res) => {
     try {
-      const restaurants = await Restaurant.findAll({ raw: true })
+      const restaurants = await Restaurant.findAll({
+        raw: true,
+        order: [['id', 'DESC']]
+      })
       return res.render('admin/restaurants', { restaurants })
     } catch (err) {
       console.log(err)
