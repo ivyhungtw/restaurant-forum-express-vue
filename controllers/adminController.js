@@ -104,8 +104,7 @@ const adminController = {
         Category.findAll({ raw: true, nest: true }),
         Restaurant.findByPk(req.params.id, { raw: true })
       ])
-      // const categories = await Category.findAll({ raw: true, nest: true })
-      // const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+
       return res.render('admin/create', { restaurant, categories })
     } catch (err) {
       console.log(err)
@@ -175,9 +174,9 @@ const adminController = {
       const adminId = helpers.getUser(req).id
 
       // Prevent admins from setting themselves as user
-      if (adminId === user.id) {
-        return res.redirect('/admin/users')
-      }
+      // if (adminId === user.id) {
+      //   return res.redirect('/admin/users')
+      // }
 
       await user.update({ ...user, isAdmin: user.isAdmin ? 0 : 1 })
       req.flash(
