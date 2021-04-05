@@ -19,7 +19,8 @@ const port = process.env.PORT || 3000
 app.engine(
   'handlebars',
   handlebars({
-    defaultLayout: 'main'
+    defaultLayout: 'main',
+    helpers: require('./config/handlebars-helpers')
   })
 )
 app.set('view engine', 'handlebars')
