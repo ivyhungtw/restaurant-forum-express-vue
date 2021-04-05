@@ -15,6 +15,11 @@ module.exports = (app, passport) => {
   app.get('/restaurants/:id', authenticateUser, restController.getRestaurant)
 
   app.post('/comments', authenticateUser, commentController.postComment)
+  app.delete(
+    '/comments/:id',
+    authenticateAdmin,
+    commentController.deleteComment
+  )
 
   app.get('/users/:id', authenticateUser, userController.getUser)
 
