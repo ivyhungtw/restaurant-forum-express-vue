@@ -2,7 +2,21 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
 
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+
 const helpers = require('../_helpers')
+
+const uploadImg = path => {
+  return new Promise((resolve, reject) => {
+    imgur.upload(path, (err, img) => {
+      if (err) {
+        return reject(err)
+      }
+      resolve(img)
+    })
+  })
+}
 
 const userController = {
   signUpPage: (req, res) => {
@@ -85,8 +99,53 @@ const userController = {
 
   getUser: async (req, res) => {
     try {
-      const user = await User.findByPk(helpers.getUser(req).id)
-      res.render('user', { user: user.toJSON() })
+      const user = await User.findByPk(req.params.id)
+      res.render('user', {
+        userProfile: user.toJSON(),
+        user: helpers.getUser(req)
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  },
+  editUser: async (req, res) => {
+    const userId = helpers.getUser(req).id
+    const id = req.params.id
+
+    // Users can only edit their own profile
+    if (userId !== Number(id)) {
+      return res.redirect(`/users/${userId}/edit`)
+    }
+    try {
+      const user = await User.findByPk(userId)
+      res.render('edit', { user: user.toJSON() })
+    } catch (err) {
+      console.log(err)
+    }
+  },
+  putUser: async (req, res) => {
+    const userId = helpers.getUser(req).id
+    const id = req.params.id
+    const { file } = req
+    let img
+
+    // Users can only edit their own profile
+    if (userId !== Number(id)) {
+      return res.redirect(`/users/${userId}/edit`)
+    }
+
+    try {
+      if (file) {
+        imgur.setClientID(IMGUR_CLIENT_ID)
+        img = await uploadImg(file.path)
+      }
+
+      const user = await User.findByPk(userId)
+      await user.update({
+        name: req.body.name,
+        image: file ? img.data.link : user.image
+      })
+      res.redirect(`/users/${userId}`)
     } catch (err) {
       console.log(err)
     }

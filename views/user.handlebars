@@ -1,1 +1,14 @@
-<h2>{{ user.name }}</h2>
+<div class="container">
+  <div class="row">
+    <div class="col-4">
+      <img src="{{userProfile.image}}" style="width: 250px;margin-bottom: 25px;">
+    </div>
+    <div class="col-8">
+      <h3>{{userProfile.name}}</h3>
+      <p>{{userProfile.email}}</p>
+      {{#ifCond userProfile.id user.id}}
+      <a href="/users/{{userProfile.id}}/edit" class="btn btn-primary">edit</a>
+      {{/ifCond}}
+    </div>
+  </div>
+</div>
