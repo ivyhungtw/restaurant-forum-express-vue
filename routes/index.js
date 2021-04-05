@@ -61,11 +61,11 @@ module.exports = (app, passport) => {
     adminController.deleteRestaurant
   )
 
-  app.get(
-    '/admin/categories',
-    authenticateAdmin,
-    categoryController.getCategories
-  )
+  app
+    .route('/admin/categories')
+    .all(authenticateAdmin)
+    .get(categoryController.getCategories)
+    .post(categoryController.postCategories)
 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
