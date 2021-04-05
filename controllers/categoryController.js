@@ -8,7 +8,16 @@ const categoryController = {
       nest: true,
       order: [['id', 'DESC']]
     })
-    res.render('admin/categories', { categories, id: req.params.id })
+
+    if (req.params.id) {
+      const category = await Category.findByPk(req.params.id)
+      return res.render('admin/categories', {
+        categories,
+        category: category.toJSON()
+      })
+    }
+
+    res.render('admin/categories', { categories })
   },
   postCategories: async (req, res) => {
     if (!req.body.name) {
@@ -16,6 +25,16 @@ const categoryController = {
       return res.redirect('back')
     }
     await Category.create({ name: req.body.name })
+    res.redirect('/admin/categories')
+  },
+  putCategory: async (req, res) => {
+    if (!req.body.name) {
+      req.flash('errorMsg', 'Name can not be empty.')
+      return res.redirect('back')
+    }
+
+    const category = await Category.findByPk(req.params.id)
+    await category.update(req.body)
     res.redirect('/admin/categories')
   }
 }
