@@ -80,8 +80,10 @@ const adminController = {
   },
   getRestaurant: async (req, res) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
-      return res.render('admin/restaurant', { restaurant })
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        include: [Category]
+      })
+      return res.render('admin/restaurant', { restaurant: restaurant.toJSON() })
     } catch (err) {
       console.log(err)
     }
