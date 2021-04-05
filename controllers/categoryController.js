@@ -36,6 +36,11 @@ const categoryController = {
     const category = await Category.findByPk(req.params.id)
     await category.update(req.body)
     res.redirect('/admin/categories')
+  },
+  deleteCategory: async (req, res) => {
+    const category = await Category.findByPk(req.params.id)
+    await category.destroy()
+    res.redirect('/admin/categories')
   }
 }
 

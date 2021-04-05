@@ -41,7 +41,7 @@
               Edit
             </a>
           </button>
-          <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;" onsubmit="return checkDelete()">
             <button type="submit" class="btn btn-link">Delete</button>
           </form>
         </td>
