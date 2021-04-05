@@ -1,8 +1,8 @@
 const db = require('../models')
 const Restaurant = db.Restaurant
 const User = db.User
+const Category = db.Category
 
-const fs = require('fs').promises
 const imgur = require('imgur-node-api')
 const userController = require('./userController')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
@@ -25,7 +25,9 @@ const adminController = {
     try {
       const restaurants = await Restaurant.findAll({
         raw: true,
-        order: [['id', 'DESC']]
+        order: [['id', 'DESC']],
+        nest: true,
+        include: [Category]
       })
       return res.render('admin/restaurants', { restaurants })
     } catch (err) {
