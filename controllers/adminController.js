@@ -34,11 +34,19 @@ const adminController = {
       console.log(err)
     }
   },
-  createRestaurant: (req, res) => {
-    return res.render('admin/create')
+  createRestaurant: async (req, res) => {
+    const categories = await Category.findAll({ raw: true, nest: true })
+    return res.render('admin/create', { categories })
   },
   postRestaurant: async (req, res) => {
-    const { name, tel, address, opening_hours, description } = req.body
+    const {
+      name,
+      tel,
+      address,
+      opening_hours,
+      description,
+      categoryId
+    } = req.body
     const { file } = req
     let img
     const errors = []
@@ -51,7 +59,8 @@ const adminController = {
         tel,
         address,
         opening_hours,
-        description
+        description,
+        categoryId
       })
     }
 
@@ -69,7 +78,8 @@ const adminController = {
         address,
         opening_hours,
         description,
-        image: file ? img.data.link : null
+        image: file ? img.data.link : null,
+        CategoryId: categoryId
       })
 
       req.flash('successMsg', 'Restaurant was created successfully')
@@ -90,14 +100,26 @@ const adminController = {
   },
   editRestaurant: async (req, res) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
-      return res.render('admin/create', { restaurant })
+      const [categories, restaurant] = await Promise.all([
+        Category.findAll({ raw: true, nest: true }),
+        Restaurant.findByPk(req.params.id, { raw: true })
+      ])
+      // const categories = await Category.findAll({ raw: true, nest: true })
+      // const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      return res.render('admin/create', { restaurant, categories })
     } catch (err) {
       console.log(err)
     }
   },
   putRestaurant: async (req, res) => {
-    const { name, tel, address, opening_hours, description } = req.body
+    const {
+      name,
+      tel,
+      address,
+      opening_hours,
+      description,
+      categoryId
+    } = req.body
     const { file } = req
     let img
 
@@ -120,7 +142,8 @@ const adminController = {
         address,
         opening_hours,
         description,
-        image: file ? img.data.link : restaurant.image
+        image: file ? img.data.link : restaurant.image,
+        CategoryId: categoryId
       })
 
       req.flash('successMsg', 'Restaurant was updated successfully')
