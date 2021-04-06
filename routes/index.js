@@ -12,6 +12,7 @@ const { authenticateUser, authenticateAdmin } = require('../middleware/auth')
 module.exports = (app, passport) => {
   app.get('/', authenticateUser, (req, res) => res.redirect('/restaurants'))
   app.get('/restaurants', authenticateUser, restController.getRestaurants)
+  app.get('/restaurants/feeds', authenticateUser, restController.getFeeds)
   app.get('/restaurants/:id', authenticateUser, restController.getRestaurant)
 
   app.post('/comments', authenticateUser, commentController.postComment)

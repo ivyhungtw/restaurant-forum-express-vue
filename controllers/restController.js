@@ -60,6 +60,26 @@ const restController = {
       include: [Category, { model: Comment, include: [User] }]
     })
     res.render('restaurant', { restaurant: restaurant.toJSON() })
+  },
+  getFeeds: async (req, res) => {
+    const [restaurants, comments] = await Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        raw: true,
+        nest: true,
+        order: [['createdAt', 'DESC']],
+        include: [Category]
+      }),
+      Comment.findAll({
+        limit: 10,
+        raw: true,
+        nest: true,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant]
+      })
+    ])
+
+    res.render('feeds', { restaurants, comments })
   }
 }
 
