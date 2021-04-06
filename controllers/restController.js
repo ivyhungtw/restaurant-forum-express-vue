@@ -59,6 +59,11 @@ const restController = {
     const restaurant = await Restaurant.findByPk(req.params.id, {
       include: [Category, { model: Comment, include: [User] }]
     })
+    // Count views to show on dashboard
+    restaurant.viewCounts = restaurant.viewCounts
+      ? restaurant.viewCounts + 1
+      : 1
+    await restaurant.save()
     res.render('restaurant', { restaurant: restaurant.toJSON() })
   },
   getFeeds: async (req, res) => {
