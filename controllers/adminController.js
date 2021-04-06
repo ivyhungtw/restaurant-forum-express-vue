@@ -50,23 +50,43 @@ const adminController = {
     const { file } = req
     let img
     const errors = []
+    const acceptedType = ['.png', '.jpg', '.jpeg']
 
     if (!name || !tel || !address || !opening_hours || !description) {
       errors.push({ message: 'All fields are required!' })
-      return res.render('admin/create', {
-        errors,
-        name,
-        tel,
-        address,
-        opening_hours,
-        description,
-        categoryId
-      })
     }
 
     // Files stored in /temp through multer middleware will be removed in the future,
     // so I need to keep the successfully uploaded image by uploading to imgur through API
     try {
+      if (file) {
+        const fileType = file.originalname
+          .substring(file.originalname.lastIndexOf('.'))
+          .toLowerCase()
+
+        if (acceptedType.indexOf(fileType) === -1) {
+          errors.push({
+            message:
+              'This type of image is not accepted, Please upload the image ends with png, jpg, or jpeg.'
+          })
+        }
+      }
+
+      if (errors.length > 0) {
+        req.flash('userInput', [
+          {
+            name,
+            tel,
+            address,
+            opening_hours,
+            description,
+            categoryId: Number(categoryId)
+          }
+        ])
+        req.flash('errors', errors)
+        return res.redirect('/admin/restaurants/create')
+      }
+
       if (file) {
         imgur.setClientID(IMGUR_CLIENT_ID)
         img = await uploadImg(file.path)
@@ -121,6 +141,7 @@ const adminController = {
     } = req.body
     const { file } = req
     let img
+    const acceptedType = ['.png', '.jpg', '.jpeg']
 
     if (!name || !tel || !address || !opening_hours || !description) {
       req.flash('errorMsg', 'All fields are required!')
@@ -129,6 +150,18 @@ const adminController = {
 
     try {
       if (file) {
+        const fileType = file.originalname
+          .substring(file.originalname.lastIndexOf('.'))
+          .toLowerCase()
+
+        if (acceptedType.indexOf(fileType) === -1) {
+          req.flash(
+            'errorMsg',
+            'This type of image is not accepted, Please upload the image ends with png, jpg, or jpeg. '
+          )
+          return res.redirect('back')
+        }
+
         imgur.setClientID(IMGUR_CLIENT_ID)
         img = await uploadImg(file.path)
       }
