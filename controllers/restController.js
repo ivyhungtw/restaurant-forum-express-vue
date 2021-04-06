@@ -8,8 +8,6 @@ const pageLimit = 10
 
 const restController = {
   getRestaurants: async (req, res) => {
-    const restaurants = await Restaurant.findAll()
-    console.log(restaurants[Math.ceil(Math.random() * 50)].id)
     let offset = 0
     const whereQuery = {}
     let categoryId = ''
