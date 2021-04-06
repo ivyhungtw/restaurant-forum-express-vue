@@ -111,7 +111,6 @@ const userController = {
       })
       const count = result.count
       const comments = result.rows
-      console.log('result', result)
 
       const user = await User.findByPk(req.params.id)
 
@@ -131,6 +130,7 @@ const userController = {
 
     // Users can only edit their own profile
     if (userId !== Number(id)) {
+      req.flash('errorMsg', 'You can only edit your own profile.')
       return res.redirect(`/users/${userId}/edit`)
     }
     try {
@@ -145,14 +145,36 @@ const userController = {
     const id = req.params.id
     const { file } = req
     let img
+    const acceptedType = ['.png', '.jpg', '.jpeg']
 
     // Users can only edit their own profile
     if (userId !== Number(id)) {
+      req.flash('errorMsg', 'You can only edit your own profile.')
       return res.redirect(`/users/${userId}/edit`)
+    }
+
+    if (!req.body.name || req.body.name.length > 25) {
+      req.flash(
+        'errorMsg',
+        'Name can not be empty or longer than 25 characters.'
+      )
+      return res.redirect('back')
     }
 
     try {
       if (file) {
+        const fileType = file.originalname
+          .substring(file.originalname.lastIndexOf('.'))
+          .toLowerCase()
+
+        if (acceptedType.indexOf(fileType) === -1) {
+          req.flash(
+            'errorMsg',
+            'This type of image is not accepted, Please upload the image ends with png, jpg, or jpeg. '
+          )
+          return res.redirect('back')
+        }
+
         imgur.setClientID(IMGUR_CLIENT_ID)
         img = await uploadImg(file.path)
       }

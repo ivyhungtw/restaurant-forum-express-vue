@@ -2,11 +2,11 @@
   {{> message}}
   <div class="form--group">
     <label for="inputName">Name</label>
-    <input type="text" name="name" class="form-control" placeholder="Name" id="inputName" value="{{ user.name }}" required autofocus>
+    <input type="text" name="name" class="form-control" placeholder="Name" id="inputName" value="{{ user.name }}" maxlength="25" required autofocus>
   </div>
-  <div class="form-group">
-    <label for="image">Image</label>
-    <input type="file" class="form-control-file" id="image" name="image">
+  <div class="form-group mt-3">
+    <label for="image">Image (.png, .jpg, .jpeg)</label>
+    <input type="file" class="form-control-file" id="image" name="image" accept=".png,.jpg,.jpeg">
   </div>
   
   <br/>
