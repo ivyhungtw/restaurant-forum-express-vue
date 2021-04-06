@@ -1,14 +1,34 @@
 <div class="container">
   <div class="row">
-    <div class="col-4">
+    <div class="col-12 col-md-6 col-lg-4">
       <img src="{{userProfile.image}}" style="width: 250px;margin-bottom: 25px;">
     </div>
-    <div class="col-8">
-      <h3>{{userProfile.name}}</h3>
-      <p>{{userProfile.email}}</p>
+    <div class="col-12 col-md-6 col-lg-8 d-flex flex-column justify-content-between pt-4 pb-5">
+      <div class="mb-3">
+        <h3>{{userProfile.name}}</h3>
+        <p>{{userProfile.email}}</p>
+        <div>{{count}} 已評論餐廳</div>
+      </div>
       {{#ifCond userProfile.id user.id}}
-      <a href="/users/{{userProfile.id}}/edit" class="btn btn-primary">edit</a>
+      <div>
+        <a href="/users/{{userProfile.id}}/edit" class="btn btn-primary">edit</a>
+      </div>
       {{/ifCond}}
     </div>
+  </div>
+  <div class="row" style="border: #cfcfcf9e solid 1px; border-radius: 2px;">
+    <div class="col-12 px-4 py-3" style="border-bottom: #cfcfcf9e solid 1px;">
+      <div>{{count}} 已評論餐廳</div>
+    </div>
+    <div class="col-12 p-4" style="background-color: white;">
+      {{#each comments}}
+      <a href="/restaurants/{{this.RestaurantId}}" class="mr-2 ">
+        <img src="{{this.Restaurant.image}}" style="width: 60px;">
+      </a>
+      {{/each}}
+    </div> 
+  </div>
+
+    
   </div>
 </div>
