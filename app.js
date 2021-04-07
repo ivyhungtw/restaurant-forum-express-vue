@@ -32,6 +32,12 @@ app.use(flash())
 app.use(methodOverride('_method'))
 app.use('/upload', express.static(__dirname + '/upload'))
 app.use(express.static('public'))
+app.use(function (req, res, next) {
+  if (!req.session.views) {
+    req.session.views = {}
+  }
+  next()
+})
 
 app.use((req, res, next) => {
   res.locals.successMsg = req.flash('successMsg')
