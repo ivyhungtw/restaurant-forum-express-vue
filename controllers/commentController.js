@@ -4,6 +4,11 @@ const Comment = db.Comment
 
 const commentController = {
   postComment: async (req, res) => {
+    if (req.body.text.length > 200 || req.body.text.length < 50) {
+      req.flash('errorMsg', 'Your comment does not meet the required length.')
+      req.flash('userInput', req.body.text)
+      return res.redirect('back')
+    }
     await Comment.create({
       text: req.body.text,
       RestaurantId: req.body.restaurantId,
