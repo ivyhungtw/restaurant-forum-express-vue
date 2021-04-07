@@ -69,12 +69,16 @@ const restController = {
       include: [
         Category,
         { model: Comment, include: [User] },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
     const isFavorited = restaurant.FavoritedUsers.map(
       favUser => favUser.id
     ).includes(req.user.id)
+    const isLiked = restaurant.LikedUsers.map(likeUser => likeUser.id).includes(
+      req.user.id
+    )
 
     // Count unique page views to show on dashboard
     if (!req.session.views[req.params.id]) {
@@ -87,7 +91,11 @@ const restController = {
       await restaurant.save()
     }
 
-    res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+    res.render('restaurant', {
+      restaurant: restaurant.toJSON(),
+      isFavorited,
+      isLiked
+    })
   },
   getFeeds: async (req, res) => {
     const [restaurants, comments] = await Promise.all([
