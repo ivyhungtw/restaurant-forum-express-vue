@@ -193,7 +193,7 @@ const userController = {
   },
   addFavorite: async (req, res) => {
     await Favorite.create({
-      UserId: req.user.id,
+      UserId: helpers.getUser(req).id,
       RestaurantId: req.params.restaurantId
     })
     res.redirect('back')
@@ -201,7 +201,7 @@ const userController = {
   removeFavorite: async (req, res) => {
     const favorite = await Favorite.findOne({
       where: {
-        UserId: req.user.id,
+        UserId: helpers.getUser(req).id,
         RestaurantId: req.params.restaurantId
       }
     })
@@ -210,7 +210,7 @@ const userController = {
   },
   likeRestaurant: async (req, res) => {
     await Like.create({
-      UserId: req.user.id,
+      UserId: helpers.getUser(req).id,
       RestaurantId: req.params.restaurantId
     })
     res.redirect('back')
@@ -219,7 +219,7 @@ const userController = {
     const like = await Like.findOne({
       where: {
         RestaurantId: req.params.restaurantId,
-        UserId: req.user.id
+        UserId: helpers.getUser(req).id
       }
     })
     await like.destroy()

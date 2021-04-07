@@ -4,6 +4,8 @@ const Category = db.Category
 const Comment = db.Comment
 const User = db.User
 
+const helpers = require('../_helpers')
+
 const pageLimit = 10
 
 const restController = {
@@ -39,12 +41,12 @@ const restController = {
     const next = page + 1 > pages ? pages : page + 1
 
     // clean up restaurant data
-    const favRestaurants = req.user.FavoritedRestaurants.map(
-      favRestaurant => favRestaurant.id
-    )
-    const likeRestaurants = req.user.LikedRestaurants.map(
-      likeRestaurant => likeRestaurant.id
-    )
+    const favRestaurants = helpers
+      .getUser(req)
+      .FavoritedRestaurants.map(favRestaurant => favRestaurant.id)
+    const likeRestaurants = helpers
+      .getUser(req)
+      .LikedRestaurants.map(likeRestaurant => likeRestaurant.id)
 
     const data = result.rows.map(restaurant => ({
       ...restaurant.dataValues,
@@ -75,9 +77,9 @@ const restController = {
     })
     const isFavorited = restaurant.FavoritedUsers.map(
       favUser => favUser.id
-    ).includes(req.user.id)
+    ).includes(helpers.getUser(req).id)
     const isLiked = restaurant.LikedUsers.map(likeUser => likeUser.id).includes(
-      req.user.id
+      helpers.getUser(req).id
     )
 
     // Count unique page views to show on dashboard
