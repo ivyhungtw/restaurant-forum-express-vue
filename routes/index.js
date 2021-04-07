@@ -33,6 +33,12 @@ module.exports = (app, passport) => {
     .post(userController.addFavorite)
     .delete(userController.removeFavorite)
 
+  app
+    .route('/like/:restaurantId')
+    .all(authenticateUser)
+    .post(userController.likeRestaurant)
+    .delete(userController.unlikeRestaurant)
+
   app.get('/users/:id', authenticateUser, userController.getUser)
   app.put(
     '/users/:id',
