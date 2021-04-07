@@ -39,10 +39,14 @@ const restController = {
     const next = page + 1 > pages ? pages : page + 1
 
     // clean up restaurant data
+    const favRestaurants = req.user.FavoritedRestaurants.map(
+      favRestaurant => favRestaurant.id
+    )
     const data = result.rows.map(restaurant => ({
       ...restaurant.dataValues,
       description: restaurant.dataValues.description.substring(0, 50),
-      categoryName: restaurant.Category.name
+      categoryName: restaurant.Category.name,
+      isFavorited: favRestaurants.includes(restaurant.id)
     }))
 
     return res.render('restaurants', {

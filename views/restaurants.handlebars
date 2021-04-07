@@ -31,8 +31,11 @@
           </p>
           <span class="badge badge-secondary">{{this.categoryName}}</span>
           <p class="card-text">{{this.description}}</p>
-          <form action="/favorite/{{this.id}}?_method=DELETE" method="POST"><button type="submit" class="btn btn-danger">Remove from Favorite</button></form>
-          <form action="/favorite/{{this.id}}" method="POST"><button type="submit" class="btn btn-primary">Add to Favorite</button></form>
+          {{#if this.isFavorited }}
+            <form action="/favorite/{{this.id}}?_method=DELETE" method="POST"><button type="submit" class="btn btn-danger">Remove from Favorite</button></form>
+          {{else}}
+            <form action="/favorite/{{this.id}}" method="POST"><button type="submit" class="btn btn-primary">Add to Favorite</button></form>
+          {{/if}}
         </div>
       </div>
     </div>
