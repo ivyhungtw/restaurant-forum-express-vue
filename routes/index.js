@@ -27,6 +27,12 @@ module.exports = (app, passport) => {
     commentController.deleteComment
   )
 
+  app
+    .route('/favorite/:restaurantId')
+    .all(authenticateUser)
+    .post(userController.addFavorite)
+    .delete(userController.removeFavorite)
+
   app.get('/users/:id', authenticateUser, userController.getUser)
   app.put(
     '/users/:id',
