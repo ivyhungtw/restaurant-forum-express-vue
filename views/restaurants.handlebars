@@ -24,7 +24,7 @@
   {{/each}}
 </ul>
 <br/>
-<div class="row">
+<div class="row" id="data-panel">
   {{#each restaurants}}
     <div class="col-md-4">
       <div class="card mb-4 shadow-sm">
@@ -42,11 +42,13 @@
           {{else}}
             <form action="/favorite/{{this.id}}" method="POST" style="display: contents;"><button type="submit" class="btn btn-primary">Add to Favorite</button></form>
           {{/if}}
+          <div class="like-container" style="display: contents;">
           {{#if this.isLiked }}
-            <form action="/like/{{this.id}}?_method=DELETE" method="POST" style="display: contents;"><button type="submit" class="btn btn-danger">Unlike</button></form>
+            <button class="btn btn-danger likeBtn" data-id="{{this.id}}">Unlike</button>
           {{else}}
-            <form action="/like/{{this.id}}" method="POST" style="display: contents;"><button type="submit" class="btn btn-primary">Like</button></form>
+            <button class="btn btn-primary likeBtn" data-id="{{this.id}}">Like</button>
           {{/if}}
+          </div>
         </div>
       </div>
     </div>
@@ -75,3 +77,33 @@
     </li>
   </ul>
 </nav>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  let btnLike = document.querySelector(".likeBtn")
+  const dataPanel = document.querySelector("#data-panel")
+
+  const changeLike = function (e) {
+    const id = e.target.dataset.id
+    if (e.target.closest('.like-container')) {
+      if (btnLike.textContent === 'Like') {
+        axios.post(`/like/${id}`)
+      .then(response => {
+        btnLike.textContent = response.data.likeBtn
+      })
+      .catch(error => console.log(error))
+      } else {
+        axios.delete(`/like/${id}`)
+        .then(response => {
+        btnLike.textContent = response.data.likeBtn
+      })
+      .catch(error => console.log(error))
+      }
+      btnLike.classList.toggle('btn-primary')
+      btnLike.classList.toggle('btn-danger')
+    }
+    
+  }
+
+  dataPanel.addEventListener('click', changeLike)
+</script>

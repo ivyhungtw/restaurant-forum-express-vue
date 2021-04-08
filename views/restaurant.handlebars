@@ -1,3 +1,4 @@
+{{data.isLiked}}
 <div class="row">
   <div class="col-md-12">
     <h1>{{restaurant.name}}</h1>
@@ -21,11 +22,14 @@
     {{else}}
       <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;"><button type="submit" class="btn btn-primary">Add to Favorite</button></form>
     {{/if}}
-    {{#if this.isLiked }}
-      <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;"><button type="submit" class="btn btn-danger">Unlike</button></form>
+    <div class="like-container" style="display: contents;">
+    {{#if isLiked }}
+      <button class="btn btn-danger likeBtn">Unlike</button>
     {{else}}
-      <form action="/like/{{restaurant.id}}" method="POST" style="display: contents;"><button type="submit" class="btn btn-primary">Like</button></form>
+      <button class="btn btn-primary likeBtn">Like</button>
     {{/if}}
+    </div>
+    
   </div>
   <hr>
 </div>
@@ -58,3 +62,28 @@
 <br />
 <br />
 <a href="javascript:history.back()">回上一頁</a>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  let btnLike = document.querySelector(".likeBtn")
+
+  const changeLike = function () {
+    if (btnLike.textContent === 'Like') {
+      axios.post("/like/{{restaurant.id}}")
+    .then(response => {
+      btnLike.textContent = response.data.likeBtn
+    })
+    .catch(error => console.log(error))
+    } else {
+      axios.delete("/like/{{restaurant.id}}")
+      .then(response => {
+      btnLike.textContent = response.data.likeBtn
+    })
+    .catch(error => console.log(error))
+    }
+    btnLike.classList.toggle('btn-primary')
+    btnLike.classList.toggle('btn-danger')
+  }
+
+  btnLike.addEventListener('click', changeLike)
+</script>
