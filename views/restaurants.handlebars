@@ -80,27 +80,27 @@
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-  let btnLike = document.querySelector(".likeBtn")
   const dataPanel = document.querySelector("#data-panel")
 
   const changeLike = function (e) {
     const id = e.target.dataset.id
+    const target = e.target
     if (e.target.closest('.like-container')) {
-      if (btnLike.textContent === 'Like') {
+      if (target.textContent === 'Like') {
         axios.post(`/like/${id}`)
       .then(response => {
-        btnLike.textContent = response.data.likeBtn
+        target.textContent = response.data.likeBtn
       })
       .catch(error => console.log(error))
       } else {
         axios.delete(`/like/${id}`)
         .then(response => {
-        btnLike.textContent = response.data.likeBtn
+        target.textContent = response.data.likeBtn
       })
       .catch(error => console.log(error))
       }
-      btnLike.classList.toggle('btn-primary')
-      btnLike.classList.toggle('btn-danger')
+      target.classList.toggle('btn-primary')
+      target.classList.toggle('btn-danger')
     }
     
   }
