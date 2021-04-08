@@ -10,6 +10,7 @@
   </li>
 </ul>
 <br /><br />
+{{> message}}
 <h1>美食達人</h1>
 <hr />
 <div class="row" style="text-align: center;">
@@ -26,7 +27,7 @@
               type="submit" class="btn btn-danger">取消追蹤</button></form>
         {{else}}
           <form action="/following/{{this.id}}" method="POST" style="display: contents;"><button type="submit"
-              class="btn btn-primary">追蹤</button></form>
+              class="btn btn-primary" {{#ifCond this.id ../id}}disabled{{/ifCond}}>追蹤</button></form>
         {{/if}}
       </p>
     </div>

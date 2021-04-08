@@ -26,18 +26,21 @@ module.exports = (app, passport) => {
     authenticateAdmin,
     commentController.deleteComment
   )
-
   app
     .route('/favorite/:restaurantId')
     .all(authenticateUser)
     .post(userController.addFavorite)
     .delete(userController.removeFavorite)
-
   app
     .route('/like/:restaurantId')
     .all(authenticateUser)
     .post(userController.likeRestaurant)
     .delete(userController.unlikeRestaurant)
+  app
+    .route('/following/:userId')
+    .all(authenticateUser)
+    .post(userController.addFollowing)
+    .delete(userController.removeFollowing)
 
   app.get('/users/top', authenticateUser, userController.getTopUser)
   app.get('/users/:id', authenticateUser, userController.getUser)

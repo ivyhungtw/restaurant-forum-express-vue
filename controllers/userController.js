@@ -5,6 +5,7 @@ const Comment = db.Comment
 const Restaurant = db.Restaurant
 const Favorite = db.Favorite
 const Like = db.Like
+const Followship = db.Followship
 
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
@@ -240,7 +241,29 @@ const userController = {
 
     users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
 
-    res.render('topUser', { users })
+    res.render('topUser', { users, id: req.user.id })
+  },
+  addFollowing: async (req, res) => {
+    // Users can not follow themselves
+    if (req.user.id === Number(req.params.userId)) {
+      req.flash('errorMsg', 'You can not follow yourself.')
+      return res.redirect('back')
+    }
+    await Followship.create({
+      followingId: req.params.userId,
+      followerId: req.user.id
+    })
+    res.redirect('back')
+  },
+  removeFollowing: async (req, res) => {
+    const followship = await Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId
+      }
+    })
+    await followship.destroy()
+    res.redirect('back')
   }
 }
 
