@@ -39,6 +39,7 @@ module.exports = (app, passport) => {
     .post(userController.likeRestaurant)
     .delete(userController.unlikeRestaurant)
 
+  app.get('/users/top', authenticateUser, userController.getTopUser)
   app.get('/users/:id', authenticateUser, userController.getUser)
   app.put(
     '/users/:id',

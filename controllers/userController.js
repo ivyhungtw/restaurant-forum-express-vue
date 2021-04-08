@@ -224,6 +224,23 @@ const userController = {
     })
     await like.destroy()
     res.redirect('back')
+  },
+  getTopUser: async (req, res) => {
+    let users = await User.findAll({
+      include: [{ model: User, as: 'Followers' }]
+    })
+    const followings = req.user.Followings.map(following => following.id)
+
+    // Clean up users data
+    users = users.map(user => ({
+      ...user.dataValues,
+      FollowerCount: user.Followers.length,
+      isFollowed: followings.includes(user.id)
+    }))
+
+    users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
+
+    res.render('topUser', { users })
   }
 }
 
