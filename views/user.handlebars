@@ -7,27 +7,84 @@
       <div class="mb-3">
         <h3>{{userProfile.name}}</h3>
         <p>{{userProfile.email}}</p>
-        <div>{{count}} 已評論餐廳</div>
+        <div><strong>{{commentRestaurants.length}}</strong> 已評論餐廳</div>
+        <div><strong>{{favRestaurants.length}}</strong> 收藏的餐廳</div>
+        <div><strong>{{followings.length}}</strong> followings</div>
+        <div><strong>{{followers.length}}</strong> followers</div>
       </div>
-      {{#ifCond userProfile.id user.id}}
+      {{#ifCond userProfile.id userId}}
       <div>
         <a href="/users/{{userProfile.id}}/edit" class="btn btn-primary">edit</a>
       </div>
       {{/ifCond}}
     </div>
   </div>
-  <div class="row" style="border: #cfcfcf9e solid 1px; border-radius: 2px;">
-    <div class="col-12 px-4 py-3" style="border-bottom: #cfcfcf9e solid 1px;">
-      <div>{{count}} 已評論餐廳</div>
+  <div class="row" >
+    {{!-- Followings --}}
+    <div class="col-12 col-md-5 p-0 mr-3 mb-3" style="background-color: white; border: #cfcfcf9e solid 1px; border-radius: 2px;">
+      <div class=" px-4 py-3" style="border-bottom: #cfcfcf9e solid 1px; background-color: #f8f9fa;">
+        <div><strong>{{followings.length}}</strong> followings</div>
+      </div>
+      <div class="col-12 p-4 d-flex flex-wrap" style="background-color: white;">
+        {{#each followings}}
+        <div class="mb-2">
+          <a href="/users/{{this.id}}" class="mr-2 ">
+            <img src="{{this.image}}" style="width: 60px;">
+          </a>
+        </div>
+        {{/each}}
+      </div> 
     </div>
-    <div class="col-12 p-4" style="background-color: white;">
-      {{#each comments}}
-      <a href="/restaurants/{{this.RestaurantId}}" class="mr-2 ">
-        <img src="{{this.Restaurant.image}}" style="width: 60px;">
-      </a>
-      {{/each}}
-    </div> 
+    {{!-- Comments --}}
+    <div class="col-12 col-md-6 p-0 mb-3" style="background-color: white; border: #cfcfcf9e solid 1px; border-radius: 2px;">
+      <div class=" px-4 py-3" style="border-bottom: #cfcfcf9e solid 1px; background-color: #f8f9fa;">
+        <div><strong>{{commentRestaurants.length}}</strong> 已評論餐廳</div>
+      </div>
+      <div class="col-12 p-4 d-flex flex-wrap" style="background-color: white;">
+        {{#each commentRestaurants}}
+        <div class="mb-2">
+          <a href="/restaurants/{{this.id}}" class="mr-2 ">
+            <img src="{{this.image}}" style="width: 60px;">
+          </a>
+        </div>
+        {{/each}}
+      </div> 
+    </div>
   </div>
+  <div class="row mb-3" >
+    {{!-- Followers --}}
+    <div class="col-12 col-md-5 p-0 mr-3 mb-3" style="background-color: white; border: #cfcfcf9e solid 1px; border-radius: 2px;">
+      <div class=" px-4 py-3" style="border-bottom: #cfcfcf9e solid 1px; background-color: #f8f9fa;">
+        <div><strong>{{followers.length}}</strong> followers</div>
+      </div>
+      <div class="col-12 p-4 d-flex flex-wrap" style="background-color: white;">
+        {{#each followers}}
+        <div class="mb-2">
+          <a href="/users/{{this.id}}" class="mr-2 ">
+            <img src="{{this.image}}" style="width: 60px;">
+          </a>
+        </div>
+        {{/each}}
+      </div> 
+    </div>
+    {{!-- favRestaurants --}}
+    <div class="col-12 col-md-6 p-0 mb-3" style="background-color: white; border: #cfcfcf9e solid 1px; border-radius: 2px;">
+      <div class=" px-4 py-3" style="border-bottom: #cfcfcf9e solid 1px; background-color: #f8f9fa;">
+        <div><strong>{{favRestaurants.length}}</strong> 收藏的餐廳</div>
+      </div>
+      <div class="col-12 p-4 d-flex flex-wrap" style="background-color: white;">
+        {{#each favRestaurants}}
+        <div class="mb-2">
+          <a href="/restaurants/{{this.id}}" class="mr-2 ">
+            <img src="{{this.image}}" style="width: 60px;">
+          </a>
+        </div>
+        {{/each}}
+      </div> 
+    </div>
+  </div>
+
+
 
     
   </div>

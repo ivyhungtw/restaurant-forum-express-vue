@@ -104,24 +104,57 @@ const userController = {
 
   getUser: async (req, res) => {
     try {
-      const result = await Comment.findAndCountAll({
-        raw: true,
-        nest: true,
-        where: {
-          userId: Number(req.params.id)
-        },
-        include: Restaurant
-      })
-      const count = result.count
-      const comments = result.rows
+      const {
+        id,
+        name,
+        email,
+        image,
+        Followers,
+        Followings,
+        FavoritedRestaurants,
+        Comments
+      } = (
+        await User.findOne({
+          include: [
+            {
+              model: User,
+              as: 'Followers',
+              attributes: ['id', 'image']
+            },
+            { model: User, as: 'Followings', attributes: ['id', 'image'] },
+            {
+              model: Restaurant,
+              as: 'FavoritedRestaurants',
+              attributes: ['id', 'image']
+            },
+            {
+              model: Comment,
+              include: [{ model: Restaurant, attributes: ['id', 'image'] }]
+            }
+          ],
+          where: {
+            id: Number(req.params.id)
+          }
+        })
+      ).toJSON()
 
-      const user = await User.findByPk(req.params.id)
+      // Clean up commented restaurants data without duplicated restaurant
+      const commentRestaurants = new Array()
+      const restaurantId = new Object()
+      Comments.forEach(comment => {
+        if (!restaurantId[comment.RestaurantId]) {
+          restaurantId[comment.RestaurantId] = 1
+          commentRestaurants.push(comment.Restaurant)
+        }
+      })
 
       res.render('user', {
-        userProfile: user.toJSON(),
-        user: helpers.getUser(req),
-        count,
-        comments
+        userProfile: { id, name, email, image },
+        userId: helpers.getUser(req).id,
+        commentRestaurants,
+        followers: Followers,
+        followings: Followings,
+        favRestaurants: FavoritedRestaurants
       })
     } catch (err) {
       console.log(err)
