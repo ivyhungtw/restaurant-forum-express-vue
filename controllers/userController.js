@@ -72,7 +72,8 @@ const userController = {
           req.body.password,
           bcrypt.genSaltSync(10),
           null
-        )
+        ),
+        image: 'https://i.imgur.com/q6bwDGO.png'
       })
 
       req.flash(
