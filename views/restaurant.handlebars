@@ -65,25 +65,23 @@
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-  let btnLike = document.querySelector(".likeBtn")
+  let likeBtn = document.querySelector(".likeBtn")
 
-  const changeLike = function () {
-    if (btnLike.textContent === 'Like') {
-      axios.post("/like/{{restaurant.id}}")
-    .then(response => {
-      btnLike.textContent = response.data.likeBtn
-    })
-    .catch(error => console.log(error))
-    } else {
-      axios.delete("/like/{{restaurant.id}}")
-      .then(response => {
-      btnLike.textContent = response.data.likeBtn
-    })
-    .catch(error => console.log(error))
+  const changeLike = async () => {
+    try {
+      let response
+      if (likeBtn.textContent === 'Like') {
+        response = await axios.post("/like/{{restaurant.id}}")
+      } else {
+        response = await axios.delete("/like/{{restaurant.id}}")
+      }
+      likeBtn.textContent = response.data.likeBtn
+      likeBtn.classList.toggle('btn-primary')
+      likeBtn.classList.toggle('btn-danger')
+    } catch (err) {
+      console.log(err)
     }
-    btnLike.classList.toggle('btn-primary')
-    btnLike.classList.toggle('btn-danger')
   }
 
-  btnLike.addEventListener('click', changeLike)
+  likeBtn.addEventListener('click', changeLike)
 </script>

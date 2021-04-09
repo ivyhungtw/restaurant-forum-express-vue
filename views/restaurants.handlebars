@@ -82,27 +82,23 @@
 <script>
   const dataPanel = document.querySelector("#data-panel")
 
-  const changeLike = function (e) {
-    const id = e.target.dataset.id
-    const target = e.target
-    if (e.target.closest('.like-container')) {
-      if (target.textContent === 'Like') {
-        axios.post(`/like/${id}`)
-      .then(response => {
+  const changeLike = async e =>  {
+    try {
+      const target = e.target
+      let response
+      if (target.closest('.like-container')) {
+        if (target.textContent === 'Like') {
+          response = await axios.post(`/like/${target.dataset.id}`)
+        } else {
+          response = await axios.delete(`/like/${target.dataset.id}`)
+        }
         target.textContent = response.data.likeBtn
-      })
-      .catch(error => console.log(error))
-      } else {
-        axios.delete(`/like/${id}`)
-        .then(response => {
-        target.textContent = response.data.likeBtn
-      })
-      .catch(error => console.log(error))
+        target.classList.toggle('btn-primary')
+        target.classList.toggle('btn-danger')
       }
-      target.classList.toggle('btn-primary')
-      target.classList.toggle('btn-danger')
+    } catch (err) {
+      console.log(err)
     }
-    
   }
 
   dataPanel.addEventListener('click', changeLike)
