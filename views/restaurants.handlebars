@@ -42,11 +42,11 @@
           {{else}}
             <form action="/favorite/{{this.id}}" method="POST" style="display: contents;"><button type="submit" class="btn btn-primary">Add to Favorite</button></form>
           {{/if}}
-          <div class="like-container" style="display: contents;">
+          <div class="like-container" style="display: contents;" data-id="{{this.id}}">
           {{#if this.isLiked }}
-            <button class="btn btn-danger likeBtn" data-id="{{this.id}}">Unlike</button>
+            <button class="btn btn-danger likeBtn">Unlike</button>
           {{else}}
-            <button class="btn btn-primary likeBtn" data-id="{{this.id}}">Like</button>
+            <button class="btn btn-primary likeBtn">Like</button>
           {{/if}}
           </div>
         </div>
@@ -77,29 +77,3 @@
     </li>
   </ul>
 </nav>
-
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script>
-  const dataPanel = document.querySelector("#data-panel")
-
-  const changeLike = async e =>  {
-    try {
-      const target = e.target
-      let response
-      if (target.closest('.like-container')) {
-        if (target.textContent === 'Like') {
-          response = await axios.post(`/like/${target.dataset.id}`)
-        } else {
-          response = await axios.delete(`/like/${target.dataset.id}`)
-        }
-        target.textContent = response.data.likeBtn
-        target.classList.toggle('btn-primary')
-        target.classList.toggle('btn-danger')
-      }
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  dataPanel.addEventListener('click', changeLike)
-</script>

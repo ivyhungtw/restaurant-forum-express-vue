@@ -1,5 +1,4 @@
-{{data.isLiked}}
-<div class="row">
+<div class="row" id="data-panel">
   <div class="col-md-12">
     <h1>{{restaurant.name}}</h1>
     <p>[{{restaurant.Category.name}}]</p>
@@ -22,11 +21,11 @@
     {{else}}
       <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;"><button type="submit" class="btn btn-primary">Add to Favorite</button></form>
     {{/if}}
-    <div class="like-container" style="display: contents;">
+    <div class="like-container" style="display: contents;" data-id="{{restaurant.id}}">
     {{#if isLiked }}
-      <button class="btn btn-danger likeBtn">Unlike</button>
+      <button class="btn btn-danger likeBtn" >Unlike</button>
     {{else}}
-      <button class="btn btn-primary likeBtn">Like</button>
+      <button class="btn btn-primary likeBtn" >Like</button>
     {{/if}}
     </div>
     
@@ -62,26 +61,3 @@
 <br />
 <br />
 <a href="javascript:history.back()">回上一頁</a>
-
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script>
-  let likeBtn = document.querySelector(".likeBtn")
-
-  const changeLike = async () => {
-    try {
-      let response
-      if (likeBtn.textContent === 'Like') {
-        response = await axios.post("/like/{{restaurant.id}}")
-      } else {
-        response = await axios.delete("/like/{{restaurant.id}}")
-      }
-      likeBtn.textContent = response.data.likeBtn
-      likeBtn.classList.toggle('btn-primary')
-      likeBtn.classList.toggle('btn-danger')
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  likeBtn.addEventListener('click', changeLike)
-</script>

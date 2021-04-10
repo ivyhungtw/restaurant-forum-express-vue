@@ -241,7 +241,7 @@ const userController = {
       UserId: helpers.getUser(req).id,
       RestaurantId: req.params.restaurantId
     })
-    res.json({ likeBtn: 'Unlike' })
+    res.json({ likeBtn: 'Unlike', likeBtnClass: 'btn-danger' })
   },
   unlikeRestaurant: async (req, res) => {
     const like = await Like.findOne({
@@ -251,7 +251,7 @@ const userController = {
       }
     })
     await like.destroy()
-    res.json({ likeBtn: 'Like' })
+    res.json({ likeBtn: 'Like', likeBtnClass: 'btn-primary' })
   },
   getTopUser: async (req, res) => {
     let users = await User.findAll({
