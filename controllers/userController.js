@@ -105,16 +105,7 @@ const userController = {
 
   getUser: async (req, res) => {
     try {
-      const {
-        id,
-        name,
-        email,
-        image,
-        Followers,
-        Followings,
-        FavoritedRestaurants,
-        Comments
-      } = (
+      const userProfile = (
         await User.findOne({
           include: [
             {
@@ -135,14 +126,16 @@ const userController = {
           ],
           where: {
             id: Number(req.params.id)
-          }
+          },
+          attributes: ['id', 'name', 'email', 'image']
         })
       ).toJSON()
 
-      // Clean up commented restaurants data without duplicated restaurant
-      const commentRestaurants = new Array()
-      const restaurantId = new Object()
-      Comments.forEach(comment => {
+      // Users can leave many comments on a restaurants,
+      // but we wanna show restaurants commented by the user without duplication on the profile page
+      const commentRestaurants = []
+      const restaurantId = {}
+      userProfile.Comments.forEach(comment => {
         if (!restaurantId[comment.RestaurantId]) {
           restaurantId[comment.RestaurantId] = 1
           commentRestaurants.push(comment.Restaurant)
@@ -150,12 +143,12 @@ const userController = {
       })
 
       res.render('user', {
-        userProfile: { id, name, email, image },
+        userProfile,
         userId: helpers.getUser(req).id,
         commentRestaurants,
-        followers: Followers,
-        followings: Followings,
-        favRestaurants: FavoritedRestaurants
+        followers: userProfile.Followers,
+        followings: userProfile.Followings,
+        favRestaurants: userProfile.FavoritedRestaurants
       })
     } catch (err) {
       console.log(err)
