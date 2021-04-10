@@ -1,17 +1,35 @@
 const dataPanel = document.querySelector('#data-panel')
 
-const likeRestaurants = async e => {
+const toggleBtn = async e => {
+  const favContainer = e.target.closest('.fav-container')
+  const container =
+    e.target.closest('.like-container') || e.target.closest('.fav-container')
+
+  if (!container) return
+
+  const url = e.target.closest('.like-container')
+    ? `/like/${container.dataset.id}`
+    : `/favorite/${container.dataset.id}`
+
   try {
-    const theScriptHTML = document.querySelector('#likeBtn-template').innerHTML
-    const theTemplate = Handlebars.compile(theScriptHTML)
-    const likeContainer = e.target.closest('.like-container')
-    if (likeContainer) {
-      const response =
-        e.target.textContent === 'Like'
-          ? await axios.post(`/like/${likeContainer.dataset.id}`)
-          : await axios.delete(`/like/${likeContainer.dataset.id}`)
-      const compiledData = theTemplate(response.data)
-      likeContainer.innerHTML = compiledData
+    // Toggle button style
+    const response = e.target.classList.contains('btn-primary')
+      ? await axios.post(url)
+      : await axios.delete(url)
+
+    container.innerHTML = Handlebars.compile(
+      document.querySelector('#btn-template').innerHTML
+    )(response.data)
+
+    // Show restaurants' number of favorite in real time on top restaurants page
+    if (document.querySelector('.fav-count')) {
+      const favCountContainer =
+        favContainer.previousElementSibling.previousElementSibling
+          .previousElementSibling
+
+      favCountContainer.innerHTML = Handlebars.compile(
+        document.querySelector('#fav-count-template').innerHTML
+      )(response.data)
     }
   } catch (err) {
     console.log(err)
@@ -19,5 +37,5 @@ const likeRestaurants = async e => {
 }
 
 if (dataPanel) {
-  dataPanel.addEventListener('click', likeRestaurants)
+  dataPanel.addEventListener('click', toggleBtn)
 }

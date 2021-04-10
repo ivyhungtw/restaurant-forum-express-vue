@@ -224,7 +224,15 @@ const userController = {
       UserId: helpers.getUser(req).id,
       RestaurantId: req.params.restaurantId
     })
-    res.redirect('back')
+    const restaurants = await Restaurant.findByPk(req.params.restaurantId, {
+      include: { model: User, as: 'FavoritedUsers' }
+    })
+
+    res.json({
+      btn: 'Remove from Favorite',
+      btnClass: 'btn-danger favBtn',
+      favCount: restaurants.FavoritedUsers.length
+    })
   },
   removeFavorite: async (req, res) => {
     const favorite = await Favorite.findOne({
@@ -234,14 +242,22 @@ const userController = {
       }
     })
     await favorite.destroy()
-    res.redirect('back')
+    const restaurants = await Restaurant.findByPk(req.params.restaurantId, {
+      include: { model: User, as: 'FavoritedUsers' }
+    })
+
+    res.json({
+      btn: 'Add to Favorite',
+      btnClass: 'btn-primary favBtn',
+      favCount: restaurants.FavoritedUsers.length
+    })
   },
   likeRestaurant: async (req, res) => {
     await Like.create({
       UserId: helpers.getUser(req).id,
       RestaurantId: req.params.restaurantId
     })
-    res.json({ likeBtn: 'Unlike', likeBtnClass: 'btn-danger' })
+    res.json({ btn: 'Unlike', btnClass: 'btn-danger likeBtn' })
   },
   unlikeRestaurant: async (req, res) => {
     const like = await Like.findOne({
@@ -251,7 +267,7 @@ const userController = {
       }
     })
     await like.destroy()
-    res.json({ likeBtn: 'Like', likeBtnClass: 'btn-primary' })
+    res.json({ btn: 'Like', btnClass: 'btn-primary likeBtn' })
   },
   getTopUser: async (req, res) => {
     let users = await User.findAll({

@@ -16,7 +16,7 @@
 {{> message}}
 <h1>人氣餐廳</h1>
 <hr />
-<div class="row">
+<div class="row" id="data-panel">
   {{#each restaurants}}
     <div class="col-12 d-flex justify-content-center">
       <div class="card mb-3" style="max-width: 540px;">
@@ -27,20 +27,22 @@
           <div class="col-md-8">
             <div class="card-body">
               <h5 class="card-title">{{this.name}}</h5>
-              <span class="badge badge-secondary">收藏數： {{this.favCount}}</span>
+              <div class="fav-count">
+                <span class="badge badge-secondary">收藏數： {{this.favCount}}</span>
+              </div>
               <p class="card-text">{{this.description}}</p>
               <a href="/restaurants/{{this.id}}" class="btn btn-primary" >Show</a>
-              {{#if this.isFavorited }}
-                <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" style="display: contents;"><button type="submit" class="btn btn-danger">Remove from Favorite</button></form>
-              {{else}}
-                <form action="/favorite/{{this.id}}" method="POST" style="display: contents;"><button type="submit" class="btn btn-primary">Add to Favorite</button></form>
-              {{/if}}
+              <div class="fav-container" style="display: contents;" data-id="{{this.id}}">
+                {{#if this.isFavorited }}
+                  <button class="btn btn-danger favBtn">Remove from Favorite</button>
+                {{else}}
+                  <button class="btn btn-primary favBtn">Add to Favorite</button>
+                {{/if}}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-
-    
+    </div>   
   {{/each}}
 </div>

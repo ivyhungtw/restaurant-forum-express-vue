@@ -45,7 +45,10 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   {{!-- Handlebars --}}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.js"></script>
-  <script id="likeBtn-template" type="text/x-handlebars-template">
-    <button class="btn \{{likeBtnClass}} likeBtn" >\{{likeBtn}}</button>
+  <script id="btn-template" type="text/x-handlebars-template">
+    <button class="btn \{{btnClass}}">\{{btn}}</button>
   </script>
+  <script id="fav-count-template" type="text/x-handlebars-template">
+  <span class="badge badge-secondary">收藏數： \{{favCount}}</span>
+</script>
 </html>
