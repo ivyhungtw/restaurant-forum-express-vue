@@ -3,6 +3,7 @@ const router = express.Router()
 
 const adminController = require('../controllers/api/adminController.js')
 const categoryController = require('../controllers/api/categoryController.js')
+const userController = require('../controllers/api/userController.js')
 
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
@@ -26,5 +27,7 @@ router
   .get(categoryController.getCategories)
   .put(categoryController.putCategory)
   .delete(categoryController.deleteCategory)
+
+router.post('/signin', userController.signIn)
 
 module.exports = router
