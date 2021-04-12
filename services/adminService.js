@@ -114,6 +114,80 @@ const adminService = {
       console.log(err)
     }
   },
+  putRestaurant: async (req, res, callback) => {
+    const {
+      name,
+      tel,
+      address,
+      opening_hours,
+      description,
+      categoryId
+    } = req.body
+    const { file } = req
+    let img
+    const acceptedType = ['.png', '.jpg', '.jpeg']
+    const errors = []
+
+    if (!name || !tel || !address || !opening_hours || !description) {
+      errors.push({ message: 'All fields are required!' })
+    }
+
+    try {
+      if (file) {
+        const fileType = file.originalname
+          .substring(file.originalname.lastIndexOf('.'))
+          .toLowerCase()
+
+        if (acceptedType.indexOf(fileType) === -1) {
+          errors.push({
+            message:
+              'This type of image is not accepted, Please upload the image ends with png, jpg, or jpeg.'
+          })
+        }
+      }
+
+      if (errors.length > 0) {
+        req.flash('userInput', [
+          {
+            name,
+            tel,
+            address,
+            opening_hours,
+            description,
+            categoryId: Number(categoryId)
+          }
+        ])
+        return callback({
+          status: 'error',
+          errors
+        })
+      }
+
+      if (file) {
+        imgur.setClientID(IMGUR_CLIENT_ID)
+        img = await uploadImg(file.path)
+      }
+
+      const restaurant = await Restaurant.findByPk(req.params.id)
+
+      await restaurant.update({
+        name,
+        tel,
+        address,
+        opening_hours,
+        description,
+        image: file ? img.data.link : restaurant.image,
+        CategoryId: categoryId
+      })
+
+      return callback({
+        status: 'success',
+        message: 'Restaurant was updated successfully'
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  },
   deleteRestaurant: async (req, res, callback) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id)

@@ -59,59 +59,15 @@ const adminController = {
       console.log(err)
     }
   },
-  putRestaurant: async (req, res) => {
-    const {
-      name,
-      tel,
-      address,
-      opening_hours,
-      description,
-      categoryId
-    } = req.body
-    const { file } = req
-    let img
-    const acceptedType = ['.png', '.jpg', '.jpeg']
-
-    if (!name || !tel || !address || !opening_hours || !description) {
-      req.flash('errorMsg', 'All fields are required!')
-      return res.redirect('back')
-    }
-
-    try {
-      if (file) {
-        const fileType = file.originalname
-          .substring(file.originalname.lastIndexOf('.'))
-          .toLowerCase()
-
-        if (acceptedType.indexOf(fileType) === -1) {
-          req.flash(
-            'errorMsg',
-            'This type of image is not accepted, Please upload the image ends with png, jpg, or jpeg. '
-          )
-          return res.redirect('back')
-        }
-
-        imgur.setClientID(IMGUR_CLIENT_ID)
-        img = await uploadImg(file.path)
+  putRestaurant: (req, res) => {
+    adminService.putRestaurant(req, res, data => {
+      if (data['status'] === 'error') {
+        req.flash('errors', data['errors'])
+        return res.redirect('/admin/restaurants/create')
       }
-
-      const restaurant = await Restaurant.findByPk(req.params.id)
-
-      await restaurant.update({
-        name,
-        tel,
-        address,
-        opening_hours,
-        description,
-        image: file ? img.data.link : restaurant.image,
-        CategoryId: categoryId
-      })
-
-      req.flash('successMsg', 'Restaurant was updated successfully')
+      req.flash('successMsg', data['errors'])
       return res.redirect('/admin/restaurants')
-    } catch (err) {
-      console.log(err)
-    }
+    })
   },
   deleteRestaurant: (req, res) => {
     adminService.deleteRestaurant(req, res, data => {
