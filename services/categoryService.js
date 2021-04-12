@@ -18,6 +18,13 @@ const categoryService = {
     }
 
     callback({ categories })
+  },
+  postCategories: async (req, res, callback) => {
+    if (!req.body.name) {
+      return callback({ status: 'error', message: 'Name can not be empty.' })
+    }
+    await Category.create({ name: req.body.name })
+    callback({ status: 'success', message: '' })
   }
 }
 

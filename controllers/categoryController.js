@@ -9,13 +9,14 @@ const categoryController = {
       return res.render('admin/categories', data)
     })
   },
-  postCategories: async (req, res) => {
-    if (!req.body.name) {
-      req.flash('errorMsg', 'Name can not be empty.')
-      return res.redirect('back')
-    }
-    await Category.create({ name: req.body.name })
-    res.redirect('/admin/categories')
+  postCategories: (req, res) => {
+    categoryService.postCategories(req, res, data => {
+      if (data['status'] === 'error') {
+        req.flash('errorMsg', data['message'])
+        return res.redirect('back')
+      }
+      res.redirect('/admin/categories')
+    })
   },
   putCategory: async (req, res) => {
     if (!req.body.name) {
