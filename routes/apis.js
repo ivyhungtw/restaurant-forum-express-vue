@@ -4,7 +4,13 @@ const router = express.Router()
 const adminController = require('../controllers/api/adminController.js')
 const categoryController = require('../controllers/api/categoryController.js')
 
-router.get('/admin/restaurants', adminController.getRestaurants)
+const multer = require('multer')
+const upload = multer({ dest: 'temp/' })
+
+router
+  .route('/admin/restaurants')
+  .get(adminController.getRestaurants)
+  .post(upload.single('image'), adminController.postRestaurant)
 router
   .route('/admin/restaurants/:id')
   .get(adminController.getRestaurant)

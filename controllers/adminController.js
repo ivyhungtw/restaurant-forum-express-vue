@@ -32,75 +32,15 @@ const adminController = {
     const categories = await Category.findAll({ raw: true, nest: true })
     return res.render('admin/create', { categories })
   },
-  postRestaurant: async (req, res) => {
-    const {
-      name,
-      tel,
-      address,
-      opening_hours,
-      description,
-      categoryId
-    } = req.body
-    const { file } = req
-    let img
-    const errors = []
-    const acceptedType = ['.png', '.jpg', '.jpeg']
-
-    if (!name || !tel || !address || !opening_hours || !description) {
-      errors.push({ message: 'All fields are required!' })
-    }
-
-    // Files stored in /temp through multer middleware will be removed in the future,
-    // so I need to keep the successfully uploaded image by uploading to imgur through API
-    try {
-      if (file) {
-        const fileType = file.originalname
-          .substring(file.originalname.lastIndexOf('.'))
-          .toLowerCase()
-
-        if (acceptedType.indexOf(fileType) === -1) {
-          errors.push({
-            message:
-              'This type of image is not accepted, Please upload the image ends with png, jpg, or jpeg.'
-          })
-        }
-      }
-
-      if (errors.length > 0) {
-        req.flash('userInput', [
-          {
-            name,
-            tel,
-            address,
-            opening_hours,
-            description,
-            categoryId: Number(categoryId)
-          }
-        ])
-        req.flash('errors', errors)
+  postRestaurant: (req, res) => {
+    adminService.postRestaurant(req, res, data => {
+      if (data['status'] === 'error') {
+        req.flash('errors', data['errors'])
         return res.redirect('/admin/restaurants/create')
       }
-
-      if (file) {
-        imgur.setClientID(IMGUR_CLIENT_ID)
-        img = await uploadImg(file.path)
-      }
-
-      await Restaurant.create({
-        name,
-        tel,
-        address,
-        opening_hours,
-        description,
-        image: file ? img.data.link : null,
-        CategoryId: categoryId
-      })
-
-      req.flash('successMsg', 'Restaurant was created successfully')
+      req.flash('successMsg', data['errors'])
       return res.redirect('/admin/restaurants')
-    } catch (err) {
-      console.log(err)
-    }
+    })
   },
   getRestaurant: (req, res) => {
     adminService.getRestaurant(req, res, data => {
