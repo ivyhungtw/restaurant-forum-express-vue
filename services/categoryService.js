@@ -34,6 +34,12 @@ const categoryService = {
     const category = await Category.findByPk(req.params.id)
     await category.update(req.body)
     callback({ status: 'success', message: '' })
+  },
+  deleteCategory: async (req, res, callback) => {
+    const category = await Category.findByPk(req.params.id)
+    await category.destroy()
+    return callback({ status: 'success', message: '' })
+    // res.redirect('/admin/categories')
   }
 }
 

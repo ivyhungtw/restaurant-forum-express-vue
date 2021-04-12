@@ -25,5 +25,6 @@ router
   .route('/admin/categories/:id')
   .get(categoryController.getCategories)
   .put(categoryController.putCategory)
+  .delete(categoryController.deleteCategory)
 
 module.exports = router
