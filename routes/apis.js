@@ -21,6 +21,9 @@ router
   .route('/admin/categories')
   .get(categoryController.getCategories)
   .post(categoryController.postCategories)
-router.route('/admin/categories/:id').get(categoryController.getCategories)
+router
+  .route('/admin/categories/:id')
+  .get(categoryController.getCategories)
+  .put(categoryController.putCategory)
 
 module.exports = router
