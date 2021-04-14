@@ -207,6 +207,28 @@ const adminService = {
     } catch (err) {
       console.log(err)
     }
+  },
+  toggleAdmin: async (req, res, callback) => {
+    try {
+      const user = await User.findByPk(req.params.id)
+      const adminId = helpers.getUser(req).id
+
+      // Prevent admins from setting themselves as user
+      // if (adminId === user.id) {
+      //   return res.redirect('/admin/users')
+      // }
+
+      await user.update({ ...user, isAdmin: user.isAdmin ? 0 : 1 })
+
+      callback({
+        status: 'success',
+        message: `User ${user.name} was updated to ${
+          user.isAdmin ? 'admin' : 'user'
+        } successfully`
+      })
+    } catch (err) {
+      console.log(err)
+    }
   }
 }
 module.exports = adminService

@@ -52,6 +52,12 @@ router.get(
   authenticatedAdmin,
   adminController.getUsers
 )
+router.put(
+  '/admin/users/:id/toggleAdmin',
+  authenticated,
+  authenticatedAdmin,
+  adminController.toggleAdmin
+)
 
 router.post('/signin', userController.signIn)
 router.post('/signup', userController.signUp)
