@@ -5,22 +5,7 @@ const Category = db.Category
 
 const adminService = require('../services/adminService')
 
-const imgur = require('imgur-node-api')
-const userController = require('./userController')
-const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
-
 const helpers = require('../_helpers')
-
-const uploadImg = path => {
-  return new Promise((resolve, reject) => {
-    imgur.upload(path, (err, img) => {
-      if (err) {
-        return reject(err)
-      }
-      resolve(img)
-    })
-  })
-}
 
 const adminController = {
   getRestaurants: (req, res) => {
@@ -76,13 +61,10 @@ const adminController = {
       }
     })
   },
-  getUsers: async (req, res) => {
-    try {
-      const users = await User.findAll({ raw: true })
-      res.render('admin/users', { users, id: helpers.getUser(req).id })
-    } catch (err) {
-      console.log(err)
-    }
+  getUsers: (req, res) => {
+    adminService.getUsers(req, res, data => {
+      return res.render('admin/users', data)
+    })
   },
   toggleAdmin: async (req, res) => {
     try {

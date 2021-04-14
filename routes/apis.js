@@ -46,6 +46,13 @@ router
   .put(categoryController.putCategory)
   .delete(categoryController.deleteCategory)
 
+router.get(
+  '/admin/users',
+  authenticated,
+  authenticatedAdmin,
+  adminController.getUsers
+)
+
 router.post('/signin', userController.signIn)
 router.post('/signup', userController.signUp)
 

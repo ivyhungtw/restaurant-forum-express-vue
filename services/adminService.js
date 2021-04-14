@@ -1,9 +1,12 @@
 const db = require('../models')
 const Restaurant = db.Restaurant
+const User = db.User
 const Category = db.Category
 
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+
+const helpers = require('../_helpers')
 
 const uploadImg = path => {
   return new Promise((resolve, reject) => {
@@ -193,6 +196,14 @@ const adminService = {
       const restaurant = await Restaurant.findByPk(req.params.id)
       await restaurant.destroy()
       callback({ status: 'success', message: '' })
+    } catch (err) {
+      console.log(err)
+    }
+  },
+  getUsers: async (req, res, callback) => {
+    try {
+      const users = await User.findAll({ raw: true })
+      callback({ users, id: helpers.getUser(req).id })
     } catch (err) {
       console.log(err)
     }
