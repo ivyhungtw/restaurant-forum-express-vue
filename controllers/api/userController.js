@@ -53,8 +53,15 @@ const userController = {
       }
     })
   },
+
   signUp: async (req, res) => {
     userService.signUp(req, res, data => {
+      return res.json(data)
+    })
+  },
+
+  getUser: async (req, res) => {
+    userService.getUser(req, res, data => {
       return res.json(data)
     })
   }

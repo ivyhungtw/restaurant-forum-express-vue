@@ -43,6 +43,7 @@ const userController = {
       res.redirect('/signin')
     })
   },
+
   signInPage: (req, res) => {
     return res.render('signin', {
       errorMsg: req.flash('error')
@@ -61,56 +62,11 @@ const userController = {
   },
 
   getUser: async (req, res) => {
-    try {
-      const userProfile = (
-        await User.findOne({
-          include: [
-            {
-              model: User,
-              as: 'Followers',
-              attributes: ['id', 'image']
-            },
-            { model: User, as: 'Followings', attributes: ['id', 'image'] },
-            {
-              model: Restaurant,
-              as: 'FavoritedRestaurants',
-              attributes: ['id', 'image']
-            },
-            {
-              model: Comment,
-              include: [{ model: Restaurant, attributes: ['id', 'image'] }]
-            }
-          ],
-          where: {
-            id: Number(req.params.id)
-          },
-          attributes: ['id', 'name', 'email', 'image']
-        })
-      ).toJSON()
-
-      // Users can leave many comments on a restaurants,
-      // but we wanna show restaurants commented by the user without duplication on the profile page
-      const commentRestaurants = []
-      const restaurantId = {}
-      userProfile.Comments.forEach(comment => {
-        if (!restaurantId[comment.RestaurantId]) {
-          restaurantId[comment.RestaurantId] = 1
-          commentRestaurants.push(comment.Restaurant)
-        }
-      })
-
-      res.render('user', {
-        userProfile,
-        userId: helpers.getUser(req).id,
-        commentRestaurants,
-        followers: userProfile.Followers,
-        followings: userProfile.Followings,
-        favRestaurants: userProfile.FavoritedRestaurants
-      })
-    } catch (err) {
-      console.log(err)
-    }
+    userService.getUser(req, res, data => {
+      res.render('user', data)
+    })
   },
+
   editUser: async (req, res) => {
     const userId = helpers.getUser(req).id
     const id = req.params.id

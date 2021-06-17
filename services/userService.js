@@ -81,6 +81,67 @@ const userService = {
     } catch (error) {
       console.log(error)
     }
+  },
+
+  getUser: async (req, res, callback) => {
+    try {
+      const userProfile = (
+        await User.findOne({
+          include: [
+            {
+              model: User,
+              as: 'Followers',
+              attributes: ['id', 'image']
+            },
+            { model: User, as: 'Followings', attributes: ['id', 'image'] },
+            {
+              model: Restaurant,
+              as: 'FavoritedRestaurants',
+              attributes: ['id', 'image']
+            },
+            {
+              model: Comment,
+              include: [{ model: Restaurant, attributes: ['id', 'image'] }]
+            }
+          ],
+          where: {
+            id: Number(req.params.id)
+          },
+          attributes: ['id', 'name', 'email', 'image']
+        })
+      ).toJSON()
+
+      // Users can leave many comments on a restaurants,
+      // but we wanna show restaurants commented by the user without duplication on the profile page
+      const commentRestaurants = []
+      const restaurantId = {}
+      userProfile.Comments.forEach(comment => {
+        if (!restaurantId[comment.RestaurantId]) {
+          restaurantId[comment.RestaurantId] = 1
+          commentRestaurants.push(comment.Restaurant)
+        }
+      })
+
+      return callback({
+        userProfile,
+        userId: helpers.getUser(req).id,
+        commentRestaurants,
+        followers: userProfile.Followers,
+        followings: userProfile.Followings,
+        favRestaurants: userProfile.FavoritedRestaurants
+      })
+
+      res.render('user', {
+        userProfile,
+        userId: helpers.getUser(req).id,
+        commentRestaurants,
+        followers: userProfile.Followers,
+        followings: userProfile.Followings,
+        favRestaurants: userProfile.FavoritedRestaurants
+      })
+    } catch (err) {
+      console.log(err)
+    }
   }
 }
 
