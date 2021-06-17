@@ -7,6 +7,8 @@ const Favorite = db.Favorite
 const Like = db.Like
 const Followship = db.Followship
 
+const userService = require('../services/userService')
+
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
@@ -29,62 +31,17 @@ const userController = {
   },
 
   signUp: async (req, res) => {
-    const { name, email, password, confirmPassword } = req.body
-    const emailRule = /^\w+((-\w+)|(\.\w+)|(\+\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/
-    const errors = []
-    // Before creating an account,
-    // make sure all the required fields are correct
-    if (!name || !email || !password || !confirmPassword) {
-      errors.push({ message: 'Please fill out all fields.' })
-    }
-    if (email.search(emailRule) === -1) {
-      errors.push({ message: 'Please enter the correct email address.' })
-    }
-    if (password !== confirmPassword) {
-      errors.push({ message: 'Password and confirmPassword do not match.' })
-    }
-    if (errors.length > 0) {
-      return res.render('signup', {
-        name,
-        email,
-        password,
-        confirmPassword,
-        errors
-      })
-    }
-
-    try {
-      // make sure email has not been used yet
-      const user = await User.findOne({ where: { email } })
-
-      if (user) {
-        req.flash(
-          'warningMsg',
-          `A user with ${email} already exists. Choose a different address or login directly.`
-        )
+    userService.signUp(req, res, data => {
+      if (data['status'] === 'error') {
+        if (data['errors']) {
+          return res.render('signup', data)
+        }
+        req.flash('warningMsg', data['message'])
         return res.redirect('/signup')
       }
-
-      await User.create({
-        name,
-        email,
-        password: bcrypt.hashSync(
-          req.body.password,
-          bcrypt.genSaltSync(10),
-          null
-        ),
-        image: 'https://i.imgur.com/q6bwDGO.png'
-      })
-
-      req.flash(
-        'successMsg',
-        `${req.body.email} register successfully! Please login.`
-      )
-
-      return res.redirect('/signin')
-    } catch (error) {
-      console.log(error)
-    }
+      req.flash('successMsg', data['message'])
+      res.redirect('/signin')
+    })
   },
   signInPage: (req, res) => {
     return res.render('signin', {
