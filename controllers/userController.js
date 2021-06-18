@@ -68,20 +68,13 @@ const userController = {
   },
 
   editUser: async (req, res) => {
-    const userId = helpers.getUser(req).id
-    const id = req.params.id
-
-    // Users can only edit their own profile
-    if (userId !== Number(id)) {
-      req.flash('errorMsg', 'You can only edit your own profile.')
-      return res.redirect(`/users/${userId}/edit`)
-    }
-    try {
-      const user = await User.findByPk(userId)
-      res.render('edit', { user: user.toJSON() })
-    } catch (err) {
-      console.log(err)
-    }
+    userService.editUser(req, res, data => {
+      if (data['status'] === 'error') {
+        req.flash('errorMsg', data['message'])
+        return res.redirect(`/users/${data['userId']}/edit`)
+      }
+      res.render('edit', data)
+    })
   },
   putUser: async (req, res) => {
     const userId = helpers.getUser(req).id

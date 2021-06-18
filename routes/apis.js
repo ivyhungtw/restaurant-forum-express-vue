@@ -63,5 +63,6 @@ router.post('/signin', userController.signIn)
 router.post('/signup', userController.signUp)
 
 router.get('/users/:id', authenticated, userController.getUser)
+router.get('/users/:id/edit', authenticated, userController.editUser)
 
 module.exports = router

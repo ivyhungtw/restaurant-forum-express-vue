@@ -130,15 +130,26 @@ const userService = {
         followings: userProfile.Followings,
         favRestaurants: userProfile.FavoritedRestaurants
       })
+    } catch (err) {
+      console.log(err)
+    }
+  },
 
-      res.render('user', {
-        userProfile,
-        userId: helpers.getUser(req).id,
-        commentRestaurants,
-        followers: userProfile.Followers,
-        followings: userProfile.Followings,
-        favRestaurants: userProfile.FavoritedRestaurants
+  editUser: async (req, res, callback) => {
+    const userId = helpers.getUser(req).id
+    const id = req.params.id
+
+    // Users can only edit their own profile
+    if (userId !== Number(id)) {
+      return callback({
+        status: 'error',
+        message: 'You can only edit your own profile.',
+        userId
       })
+    }
+    try {
+      const user = await User.findByPk(userId)
+      return callback({ user: user.toJSON() })
     } catch (err) {
       console.log(err)
     }

@@ -64,6 +64,12 @@ const userController = {
     userService.getUser(req, res, data => {
       return res.json(data)
     })
+  },
+
+  editUser: async (req, res) => {
+    userService.editUser(req, res, data => {
+      return res.json(data)
+    })
   }
 }
 
