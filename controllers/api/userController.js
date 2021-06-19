@@ -70,6 +70,12 @@ const userController = {
     userService.editUser(req, res, data => {
       return res.json(data)
     })
+  },
+
+  putUser: async (req, res) => {
+    userService.putUser(req, res, data => {
+      return res.json(data)
+    })
   }
 }
 

@@ -153,6 +153,58 @@ const userService = {
     } catch (err) {
       console.log(err)
     }
+  },
+
+  putUser: async (req, res, callback) => {
+    const userId = helpers.getUser(req).id
+    const id = req.params.id
+    const { file } = req
+    let img
+    const acceptedType = ['.png', '.jpg', '.jpeg']
+
+    // Users can only edit their own profile
+    if (userId !== Number(id)) {
+      return callback({
+        status: 'error',
+        message: 'You can only edit your own profile.',
+        userId
+      })
+    }
+
+    if (!req.body.name || req.body.name.length > 25) {
+      return callback({
+        status: 'error',
+        message: 'Name can not be empty or longer than 25 characters.'
+      })
+    }
+
+    try {
+      if (file) {
+        const fileType = file.originalname
+          .substring(file.originalname.lastIndexOf('.'))
+          .toLowerCase()
+
+        if (acceptedType.indexOf(fileType) === -1) {
+          return callback({
+            status: 'error',
+            message:
+              'This type of image is not accepted, Please upload the image ends with png, jpg, or jpeg.'
+          })
+        }
+
+        imgur.setClientID(IMGUR_CLIENT_ID)
+        img = await uploadImg(file.path)
+      }
+
+      const user = await User.findByPk(userId)
+      await user.update({
+        name: req.body.name,
+        image: file ? img.data.link : user.image
+      })
+      return callback({ userId })
+    } catch (err) {
+      console.log(err)
+    }
   }
 }
 
