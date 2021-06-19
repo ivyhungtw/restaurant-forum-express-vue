@@ -106,6 +106,18 @@ const userController = {
     userService.getTopUser(req, res, data => {
       return res.json(data)
     })
+  },
+
+  addFollowing: async (req, res) => {
+    userService.addFollowing(req, res, data => {
+      return res.json(data)
+    })
+  },
+
+  removeFollowing: async (req, res) => {
+    userService.removeFollowing(req, res, data => {
+      return res.json(data)
+    })
   }
 }
 

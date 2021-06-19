@@ -72,6 +72,11 @@ router
   .all(authenticated)
   .post(userController.likeRestaurant)
   .delete(userController.unlikeRestaurant)
+router
+  .route('/following/:userId')
+  .all(authenticated)
+  .post(userController.addFollowing)
+  .delete(userController.removeFollowing)
 
 router.get('/users/top', authenticated, userController.getTopUser)
 router

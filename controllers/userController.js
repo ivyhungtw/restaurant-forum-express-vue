@@ -122,26 +122,18 @@ const userController = {
   },
 
   addFollowing: async (req, res) => {
-    // Users can not follow themselves
-    if (req.user.id === Number(req.params.userId)) {
-      req.flash('errorMsg', 'You can not follow yourself.')
-      return res.redirect('back')
-    }
-    await Followship.create({
-      followingId: req.params.userId,
-      followerId: req.user.id
-    })
-    res.redirect('back')
-  },
-  removeFollowing: async (req, res) => {
-    const followship = await Followship.findOne({
-      where: {
-        followerId: req.user.id,
-        followingId: req.params.userId
+    userService.addFollowing(req, res, data => {
+      if (data['status'] === 'error') {
+        req.flash('errorMsg', data['message'])
       }
+      return res.redirect('back')
     })
-    await followship.destroy()
-    res.redirect('back')
+  },
+
+  removeFollowing: async (req, res) => {
+    userService.removeFollowing(req, res, data => {
+      return res.redirect('back')
+    })
   }
 }
 

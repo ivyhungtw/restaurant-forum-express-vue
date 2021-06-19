@@ -277,6 +277,50 @@ const userService = {
     users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
 
     callback({ users, id: req.user.id })
+  },
+
+  addFollowing: async (req, res, callback) => {
+    // Users can not follow themselves
+    if (req.user.id === Number(req.params.userId)) {
+      return callback({
+        status: 'error',
+        message: 'You can not follow yourself.'
+      })
+    }
+
+    try {
+      await Followship.create({
+        followingId: Number(req.params.userId),
+        followerId: req.user.id
+      })
+    } catch (err) {
+      console.log(err)
+    }
+
+    callback({
+      status: 'success'
+    })
+  },
+
+  removeFollowing: async (req, res, callback) => {
+    try {
+      const followship = await Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: req.params.userId
+        }
+      })
+
+      await followship.destroy()
+    } catch (err) {
+      console.log(err)
+    }
+
+    callback({
+      status: 'success'
+    })
+
+    res.redirect('back')
   }
 }
 
