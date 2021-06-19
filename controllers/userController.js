@@ -104,22 +104,17 @@ const userController = {
   },
 
   likeRestaurant: async (req, res) => {
-    await Like.create({
-      UserId: helpers.getUser(req).id,
-      RestaurantId: req.params.restaurantId
+    userService.likeRestaurant(req, res, data => {
+      return res.json(data)
     })
-    res.json({ btn: 'Unlike', btnClass: 'btn-danger likeBtn' })
   },
+
   unlikeRestaurant: async (req, res) => {
-    const like = await Like.findOne({
-      where: {
-        RestaurantId: req.params.restaurantId,
-        UserId: helpers.getUser(req).id
-      }
+    userService.unlikeRestaurant(req, res, data => {
+      return res.json(data)
     })
-    await like.destroy()
-    res.json({ btn: 'Like', btnClass: 'btn-primary likeBtn' })
   },
+  
   getTopUser: async (req, res) => {
     let users = await User.findAll({
       include: [{ model: User, as: 'Followers' }]

@@ -90,7 +90,17 @@ const userController = {
     })
   },
 
-  
+  likeRestaurant: async (req, res) => {
+    userService.likeRestaurant(req, res, data => {
+      return res.json(data)
+    })
+  },
+
+  unlikeRestaurant: async (req, res) => {
+    userService.unlikeRestaurant(req, res, data => {
+      return res.json(data)
+    })
+  }
 }
 
 module.exports = userController

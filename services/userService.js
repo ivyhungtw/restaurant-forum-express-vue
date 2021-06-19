@@ -240,6 +240,25 @@ const userService = {
       btnClass: 'btn-primary favBtn',
       favCount: restaurants.FavoritedUsers.length
     })
+  },
+
+  likeRestaurant: async (req, res, callback) => {
+    await Like.create({
+      UserId: helpers.getUser(req).id,
+      RestaurantId: req.params.restaurantId
+    })
+    callback({ btn: 'Unlike', btnClass: 'btn-danger likeBtn' })
+  },
+
+  unlikeRestaurant: async (req, res, callback) => {
+    const like = await Like.findOne({
+      where: {
+        RestaurantId: req.params.restaurantId,
+        UserId: helpers.getUser(req).id
+      }
+    })
+    await like.destroy()
+    callback({ btn: 'Like', btnClass: 'btn-primary likeBtn' })
   }
 }
 

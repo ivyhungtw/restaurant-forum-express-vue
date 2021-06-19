@@ -67,6 +67,11 @@ router
   .all(authenticated)
   .post(userController.addFavorite)
   .delete(userController.removeFavorite)
+router
+  .route('/like/:restaurantId')
+  .all(authenticated)
+  .post(userController.likeRestaurant)
+  .delete(userController.unlikeRestaurant)
 
 router
   .route('/users/:id')
