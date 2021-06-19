@@ -259,6 +259,24 @@ const userService = {
     })
     await like.destroy()
     callback({ btn: 'Like', btnClass: 'btn-primary likeBtn' })
+  },
+
+  getTopUser: async (req, res, callback) => {
+    let users = await User.findAll({
+      include: [{ model: User, as: 'Followers' }]
+    })
+    const followings = req.user.Followings.map(following => following.id)
+
+    // Clean up users data
+    users = users.map(user => ({
+      ...user.dataValues,
+      FollowerCount: user.Followers.length,
+      isFollowed: followings.includes(user.id)
+    }))
+
+    users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
+
+    callback({ users, id: req.user.id })
   }
 }
 

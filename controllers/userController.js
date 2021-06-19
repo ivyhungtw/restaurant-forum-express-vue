@@ -114,24 +114,13 @@ const userController = {
       return res.json(data)
     })
   },
-  
+
   getTopUser: async (req, res) => {
-    let users = await User.findAll({
-      include: [{ model: User, as: 'Followers' }]
+    userService.getTopUser(req, res, data => {
+      return res.render('topUser', data)
     })
-    const followings = req.user.Followings.map(following => following.id)
-
-    // Clean up users data
-    users = users.map(user => ({
-      ...user.dataValues,
-      FollowerCount: user.Followers.length,
-      isFollowed: followings.includes(user.id)
-    }))
-
-    users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
-
-    res.render('topUser', { users, id: req.user.id })
   },
+
   addFollowing: async (req, res) => {
     // Users can not follow themselves
     if (req.user.id === Number(req.params.userId)) {

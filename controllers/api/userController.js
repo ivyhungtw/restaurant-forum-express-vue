@@ -100,6 +100,12 @@ const userController = {
     userService.unlikeRestaurant(req, res, data => {
       return res.json(data)
     })
+  },
+
+  getTopUser: async (req, res) => {
+    userService.getTopUser(req, res, data => {
+      return res.json(data)
+    })
   }
 }
 

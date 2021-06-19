@@ -73,6 +73,7 @@ router
   .post(userController.likeRestaurant)
   .delete(userController.unlikeRestaurant)
 
+router.get('/users/top', authenticated, userController.getTopUser)
 router
   .route('/users/:id')
   .all(authenticated)
