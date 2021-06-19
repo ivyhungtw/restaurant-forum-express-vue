@@ -62,13 +62,17 @@ router.put(
 router.post('/signin', userController.signIn)
 router.post('/signup', userController.signUp)
 
-router.get('/users/:id', authenticated, userController.getUser)
-router.put(
-  '/users/:id',
-  authenticated,
-  upload.single('image'),
-  userController.putUser
-)
+router
+  .route('/favorite/:restaurantId')
+  .all(authenticated)
+  .post(userController.addFavorite)
+  .delete(userController.removeFavorite)
+
+router
+  .route('/users/:id')
+  .all(authenticated)
+  .get(userController.getUser)
+  .put(upload.single('image'), userController.putUser)
 router.get('/users/:id/edit', authenticated, userController.editUser)
 
 module.exports = router

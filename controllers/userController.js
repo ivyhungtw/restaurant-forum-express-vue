@@ -90,39 +90,19 @@ const userController = {
       return res.redirect(`/users/${data['userId']}/edit`)
     })
   },
+
   addFavorite: async (req, res) => {
-    await Favorite.create({
-      UserId: helpers.getUser(req).id,
-      RestaurantId: req.params.restaurantId
-    })
-    const restaurants = await Restaurant.findByPk(req.params.restaurantId, {
-      include: { model: User, as: 'FavoritedUsers' }
-    })
-
-    res.json({
-      btn: 'Remove from Favorite',
-      btnClass: 'btn-danger favBtn',
-      favCount: restaurants.FavoritedUsers.length
+    userService.addFavorite(req, res, data => {
+      return res.json(data)
     })
   },
+
   removeFavorite: async (req, res) => {
-    const favorite = await Favorite.findOne({
-      where: {
-        UserId: helpers.getUser(req).id,
-        RestaurantId: req.params.restaurantId
-      }
-    })
-    await favorite.destroy()
-    const restaurants = await Restaurant.findByPk(req.params.restaurantId, {
-      include: { model: User, as: 'FavoritedUsers' }
-    })
-
-    res.json({
-      btn: 'Add to Favorite',
-      btnClass: 'btn-primary favBtn',
-      favCount: restaurants.FavoritedUsers.length
+    userService.removeFavorite(req, res, data => {
+      return res.json(data)
     })
   },
+
   likeRestaurant: async (req, res) => {
     await Like.create({
       UserId: helpers.getUser(req).id,

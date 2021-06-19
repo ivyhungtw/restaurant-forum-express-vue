@@ -205,6 +205,41 @@ const userService = {
     } catch (err) {
       console.log(err)
     }
+  },
+
+  addFavorite: async (req, res, callback) => {
+    await Favorite.create({
+      UserId: helpers.getUser(req).id,
+      RestaurantId: req.params.restaurantId
+    })
+    const restaurants = await Restaurant.findByPk(req.params.restaurantId, {
+      include: { model: User, as: 'FavoritedUsers' }
+    })
+
+    callback({
+      btn: 'Remove from Favorite',
+      btnClass: 'btn-danger favBtn',
+      favCount: restaurants.FavoritedUsers.length
+    })
+  },
+
+  removeFavorite: async (req, res, callback) => {
+    const favorite = await Favorite.findOne({
+      where: {
+        UserId: helpers.getUser(req).id,
+        RestaurantId: req.params.restaurantId
+      }
+    })
+    await favorite.destroy()
+    const restaurants = await Restaurant.findByPk(req.params.restaurantId, {
+      include: { model: User, as: 'FavoritedUsers' }
+    })
+
+    callback({
+      btn: 'Add to Favorite',
+      btnClass: 'btn-primary favBtn',
+      favCount: restaurants.FavoritedUsers.length
+    })
   }
 }
 

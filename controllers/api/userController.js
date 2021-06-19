@@ -76,7 +76,21 @@ const userController = {
     userService.putUser(req, res, data => {
       return res.json(data)
     })
-  }
+  },
+
+  addFavorite: async (req, res) => {
+    userService.addFavorite(req, res, data => {
+      return res.json(data)
+    })
+  },
+
+  removeFavorite: async (req, res) => {
+    userService.removeFavorite(req, res, data => {
+      return res.json(data)
+    })
+  },
+
+  
 }
 
 module.exports = userController
