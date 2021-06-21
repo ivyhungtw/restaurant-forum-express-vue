@@ -19,38 +19,11 @@ const restController = {
   },
 
   getRestaurant: async (req, res) => {
-    const restaurant = await Restaurant.findByPk(req.params.id, {
-      include: [
-        Category,
-        { model: Comment, include: [User] },
-        { model: User, as: 'FavoritedUsers' },
-        { model: User, as: 'LikedUsers' }
-      ]
-    })
-    const isFavorited = restaurant.FavoritedUsers.map(
-      favUser => favUser.id
-    ).includes(helpers.getUser(req).id)
-    const isLiked = restaurant.LikedUsers.map(likeUser => likeUser.id).includes(
-      helpers.getUser(req).id
-    )
-
-    // Count unique page views to show on dashboard
-    if (!req.session.views[req.params.id]) {
-      req.session.views[req.params.id] = 1
-
-      restaurant.viewCounts = restaurant.viewCounts
-        ? restaurant.viewCounts + 1
-        : 1
-
-      await restaurant.save()
-    }
-
-    res.render('restaurant', {
-      restaurant: restaurant.toJSON(),
-      isFavorited,
-      isLiked
+    restService.getRestaurant(req, res, data => {
+      return res.render('restaurant', data)
     })
   },
+
   getFeeds: async (req, res) => {
     const [restaurants, comments] = await Promise.all([
       Restaurant.findAll({
