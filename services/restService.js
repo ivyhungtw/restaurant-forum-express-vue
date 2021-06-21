@@ -100,6 +100,27 @@ const restService = {
       isFavorited,
       isLiked
     })
+  },
+
+  getFeeds: async (req, res, callback) => {
+    const [restaurants, comments] = await Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        raw: true,
+        nest: true,
+        order: [['createdAt', 'DESC']],
+        include: [Category]
+      }),
+      Comment.findAll({
+        limit: 10,
+        raw: true,
+        nest: true,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant]
+      })
+    ])
+
+    callback({ restaurants, comments })
   }
 }
 

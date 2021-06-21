@@ -25,25 +25,11 @@ const restController = {
   },
 
   getFeeds: async (req, res) => {
-    const [restaurants, comments] = await Promise.all([
-      Restaurant.findAll({
-        limit: 10,
-        raw: true,
-        nest: true,
-        order: [['createdAt', 'DESC']],
-        include: [Category]
-      }),
-      Comment.findAll({
-        limit: 10,
-        raw: true,
-        nest: true,
-        order: [['createdAt', 'DESC']],
-        include: [User, Restaurant]
-      })
-    ])
-
-    res.render('feeds', { restaurants, comments })
+    restService.getFeeds(req, res, data => {
+      return res.render('feeds', data)
+    })
   },
+
   getDashboard: async (req, res) => {
     const restaurant = await Restaurant.findByPk(req.params.id, {
       include: [Category, { model: Comment, include: [User] }]

@@ -64,6 +64,7 @@ router.post('/signin', userController.signIn)
 router.post('/signup', userController.signUp)
 
 router.get('/restaurants', authenticated, restController.getRestaurants)
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 

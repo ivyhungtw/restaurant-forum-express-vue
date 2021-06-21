@@ -22,6 +22,12 @@ const restController = {
     restService.getRestaurant(req, res, data => {
       return res.json(data)
     })
+  },
+
+  getFeeds: async (req, res) => {
+    restService.getFeeds(req, res, data => {
+      return res.json(data)
+    })
   }
 }
 
