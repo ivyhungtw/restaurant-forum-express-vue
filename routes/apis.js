@@ -5,6 +5,7 @@ const passport = require('../config/passport')
 const adminController = require('../controllers/api/adminController.js')
 const categoryController = require('../controllers/api/categoryController.js')
 const userController = require('../controllers/api/userController.js')
+const restController = require('../controllers/api/restController.js')
 
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
@@ -61,6 +62,8 @@ router.put(
 
 router.post('/signin', userController.signIn)
 router.post('/signup', userController.signUp)
+
+router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router
   .route('/favorite/:restaurantId')
