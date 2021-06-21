@@ -28,6 +28,12 @@ const restController = {
     restService.getFeeds(req, res, data => {
       return res.json(data)
     })
+  },
+
+  getDashboard: async (req, res) => {
+    restService.getDashboard(req, res, data => {
+      return res.json(data)
+    })
   }
 }
 

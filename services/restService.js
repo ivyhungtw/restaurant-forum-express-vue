@@ -121,6 +121,17 @@ const restService = {
     ])
 
     callback({ restaurants, comments })
+  },
+
+  getDashboard: async (req, res, callback) => {
+    const restaurant = await Restaurant.findByPk(req.params.id, {
+      include: [
+        Category,
+        { model: Comment, include: [User] },
+        { model: User, as: 'FavoritedUsers', attributes: ['id'] }
+      ]
+    })
+    callback({ restaurant: restaurant.toJSON() })
   }
 }
 

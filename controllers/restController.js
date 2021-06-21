@@ -31,11 +31,11 @@ const restController = {
   },
 
   getDashboard: async (req, res) => {
-    const restaurant = await Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: Comment, include: [User] }]
+    restService.getDashboard(req, res, data => {
+      return res.render('dashboard', data)
     })
-    res.render('dashboard', { restaurant: restaurant.toJSON() })
   },
+
   getTopRestaurant: async (req, res) => {
     let restaurants = await Restaurant.findAll({
       include: { model: User, as: 'FavoritedUsers' },
