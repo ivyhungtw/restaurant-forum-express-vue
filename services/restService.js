@@ -132,6 +132,40 @@ const restService = {
       ]
     })
     callback({ restaurant: restaurant.toJSON() })
+  },
+
+  getTopRestaurant: async (req, res, callback) => {
+    let restaurants = await Restaurant.findAll({
+      include: { model: User, as: 'FavoritedUsers' },
+      attributes: [
+        'id',
+        'description',
+        'image',
+        'name',
+        [
+          sequelize.literal(
+            '(SELECT COUNT(*) FROM Favorites WHERE Favorites.RestaurantId = Restaurant.id GROUP BY Favorites.RestaurantId)'
+          ),
+          'favCount'
+        ]
+      ],
+      order: [[sequelize.literal('favCount'), 'DESC']],
+      limit: 10
+    })
+
+    // Clean up restaurants data
+    const favRestaurants = req.user.FavoritedRestaurants.map(
+      favRestaurant => favRestaurant.id
+    )
+
+    restaurants = restaurants.map(restaurant => ({
+      ...restaurant.dataValues,
+      description: restaurant.description.substring(0, 50),
+      favCount: restaurant.FavoritedUsers.length,
+      isFavorited: favRestaurants.includes(restaurant.id)
+    }))
+
+    callback({ restaurants })
   }
 }
 

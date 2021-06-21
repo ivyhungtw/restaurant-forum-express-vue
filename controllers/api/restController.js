@@ -34,6 +34,12 @@ const restController = {
     restService.getDashboard(req, res, data => {
       return res.json(data)
     })
+  },
+
+  getTopRestaurant: async (req, res) => {
+    restService.getTopRestaurant(req, res, data => {
+      return res.json(data)
+    })
   }
 }
 

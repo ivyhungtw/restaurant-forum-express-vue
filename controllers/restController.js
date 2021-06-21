@@ -37,37 +37,9 @@ const restController = {
   },
 
   getTopRestaurant: async (req, res) => {
-    let restaurants = await Restaurant.findAll({
-      include: { model: User, as: 'FavoritedUsers' },
-      attributes: [
-        'id',
-        'description',
-        'image',
-        'name',
-        [
-          sequelize.literal(
-            '(SELECT COUNT(*) FROM Favorites WHERE Favorites.RestaurantId = Restaurant.id GROUP BY Favorites.RestaurantId)'
-          ),
-          'favCount'
-        ]
-      ],
-      order: [[sequelize.literal('favCount'), 'DESC']],
-      limit: 10
+    restService.getTopRestaurant(req, res, data => {
+      return res.render('topRestaurant', data)
     })
-
-    // Clean up restaurants data
-    const favRestaurants = req.user.FavoritedRestaurants.map(
-      favRestaurant => favRestaurant.id
-    )
-
-    restaurants = restaurants.map(restaurant => ({
-      ...restaurant.dataValues,
-      description: restaurant.description.substring(0, 50),
-      favCount: restaurant.FavoritedUsers.length,
-      isFavorited: favRestaurants.includes(restaurant.id)
-    }))
-
-    res.render('topRestaurant', { restaurants })
   }
 }
 
