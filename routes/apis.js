@@ -6,6 +6,7 @@ const adminController = require('../controllers/api/adminController.js')
 const categoryController = require('../controllers/api/categoryController.js')
 const userController = require('../controllers/api/userController.js')
 const restController = require('../controllers/api/restController.js')
+const commentController = require('../controllers/api/commentController.js')
 
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
@@ -97,5 +98,7 @@ router
   .get(userController.getUser)
   .put(upload.single('image'), userController.putUser)
 router.get('/users/:id/edit', authenticated, userController.editUser)
+
+router.post('/comments', authenticated, commentController.postComment)
 
 module.exports = router

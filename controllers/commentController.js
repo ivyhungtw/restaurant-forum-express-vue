@@ -1,21 +1,20 @@
-const { createPool } = require('mysql2')
 const db = require('../models')
 const Comment = db.Comment
 
+const commentService = require('../services/commentService')
+
 const commentController = {
   postComment: async (req, res) => {
-    if (req.body.text.length > 200 || req.body.text.length < 50) {
-      req.flash('errorMsg', 'Your comment does not meet the required length.')
-      req.flash('userInput', req.body.text)
-      return res.redirect('back')
-    }
-    await Comment.create({
-      text: req.body.text,
-      RestaurantId: req.body.restaurantId,
-      UserId: req.user.id
+    commentService.postComment(req, res, data => {
+      if (data['status'] === 'error') {
+        req.flash('errorMsg', data['message'])
+        req.flash('userInput', data['userInput'])
+        return res.redirect('back')
+      }
+      res.redirect(`/restaurants/${data['restaurantId']}`)
     })
-    res.redirect(`/restaurants/${req.body.restaurantId}`)
   },
+
   deleteComment: async (req, res) => {
     const comment = await Comment.findByPk(req.params.id)
     await comment.destroy()
