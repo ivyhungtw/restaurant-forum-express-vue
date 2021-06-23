@@ -100,5 +100,10 @@ router
 router.get('/users/:id/edit', authenticated, userController.editUser)
 
 router.post('/comments', authenticated, commentController.postComment)
+router.delete(
+  '/comments/:id',
+  authenticatedAdmin,
+  commentController.deleteComment
+)
 
 module.exports = router

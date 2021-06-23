@@ -16,6 +16,13 @@ const commentService = {
       UserId: req.user.id
     })
     return callback({ restaurantId: req.body.restaurantId })
+  },
+
+  deleteComment: async (req, res, callback) => {
+    const comment = await Comment.findByPk(req.params.id)
+    await comment.destroy()
+
+    return callback({ restaurantId: comment.RestaurantId })
   }
 }
 

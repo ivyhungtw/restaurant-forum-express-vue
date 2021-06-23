@@ -16,9 +16,9 @@ const commentController = {
   },
 
   deleteComment: async (req, res) => {
-    const comment = await Comment.findByPk(req.params.id)
-    await comment.destroy()
-    res.redirect(`/restaurants/${comment.RestaurantId}`)
+    commentService.deleteComment(req, res, data => {
+      return res.redirect(`/restaurants/${data['restaurantId']}`)
+    })
   }
 }
 
