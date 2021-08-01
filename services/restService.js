@@ -77,6 +77,14 @@ const restService = {
         { model: User, as: 'LikedUsers' }
       ]
     })
+    // restaurant must exist
+    if (!restaurant)
+      return callback({
+        status: 'error',
+        code: 404,
+        message: 'The restaurant does not exist'
+      })
+
     const isFavorited = restaurant.FavoritedUsers.map(
       favUser => favUser.id
     ).includes(helpers.getUser(req).id)

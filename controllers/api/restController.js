@@ -11,6 +11,8 @@ const restController = {
 
   getRestaurant: async (req, res) => {
     restService.getRestaurant(req, res, data => {
+      if (data.status === 'error')
+        return res.status(data.code).json(data.message)
       return res.json(data)
     })
   },
