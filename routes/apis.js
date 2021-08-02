@@ -91,6 +91,7 @@ router
   .post(userController.addFollowing)
   .delete(userController.removeFollowing)
 
+router.get('/current_user', authenticated, userController.getCurrentUser)
 router.get('/users/top', authenticated, userController.getTopUser)
 router
   .route('/users/:id')

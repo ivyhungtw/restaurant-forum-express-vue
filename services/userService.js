@@ -123,7 +123,12 @@ const userService = {
       })
 
       return callback({
-        userProfile,
+        userProfile: {
+          id: userProfile.id,
+          name: userProfile.name,
+          email: userProfile.email,
+          image: userProfile.image
+        },
         userId: helpers.getUser(req).id,
         commentRestaurants,
         followers: userProfile.Followers,
