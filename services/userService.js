@@ -25,7 +25,6 @@ const uploadImg = path => {
 
 const userService = {
   signUp: async (req, res, callback) => {
-    console.log('----- userService - signup -----')
     const { name, email, password, confirmPassword } = req.body
     const emailRule =
       /^\w+((-\w+)|(\.\w+)|(\+\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/
@@ -323,12 +322,14 @@ const userService = {
 
     // Clean up users data
     users = users.map(user => ({
-      ...user.dataValues,
-      FollowerCount: user.Followers.length,
+      id: user.id,
+      name: user.name,
+      image: user.image,
+      followerCount: user.Followers.length,
       isFollowed: followings.includes(user.id)
     }))
 
-    users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
+    users = users.sort((a, b) => b.followerCount - a.followerCount)
 
     callback({ users, id: req.user.id })
   },
@@ -364,6 +365,13 @@ const userService = {
           followingId: req.params.userId
         }
       })
+
+      if (!followship) {
+        return callback({
+          status: 'error',
+          message: 'Can not remove the followship that did not exist'
+        })
+      }
 
       await followship.destroy()
     } catch (err) {
