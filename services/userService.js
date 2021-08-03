@@ -213,38 +213,79 @@ const userService = {
   },
 
   addFavorite: async (req, res, callback) => {
-    await Favorite.create({
-      UserId: helpers.getUser(req).id,
-      RestaurantId: req.params.restaurantId
-    })
-    const restaurants = await Restaurant.findByPk(req.params.restaurantId, {
-      include: { model: User, as: 'FavoritedUsers' }
-    })
+    try {
+      let restaurant = await Restaurant.findByPk(req.params.restaurantId)
 
-    callback({
-      btn: 'Remove from Favorite',
-      btnClass: 'btn-danger favBtn',
-      favCount: restaurants.FavoritedUsers.length
-    })
+      if (!restaurant) {
+        callback({
+          status: 'error',
+          message:
+            "You can't add a restaurant which doesn't exist to your favorite list."
+        })
+      }
+
+      const [fav, created] = await Favorite.findOrCreate({
+        where: {
+          UserId: helpers.getUser(req).id,
+          RestaurantId: req.params.restaurantId
+        }
+      })
+
+      if (!created) {
+        return callback({
+          status: 'error',
+          message: 'The restaurant has already in your favorite list'
+        })
+      }
+
+      restaurant = await Restaurant.findByPk(req.params.restaurantId, {
+        include: { model: User, as: 'FavoritedUsers' }
+      })
+
+      callback({
+        status: 'success',
+        restaurantName: restaurant.name,
+        btn: 'Remove from Favorite',
+        btnClass: 'btn-danger favBtn',
+        favCount: restaurant.FavoritedUsers.length
+      })
+    } catch (err) {
+      console.log(err)
+    }
   },
 
   removeFavorite: async (req, res, callback) => {
-    const favorite = await Favorite.findOne({
-      where: {
-        UserId: helpers.getUser(req).id,
-        RestaurantId: req.params.restaurantId
-      }
-    })
-    await favorite.destroy()
-    const restaurants = await Restaurant.findByPk(req.params.restaurantId, {
-      include: { model: User, as: 'FavoritedUsers' }
-    })
+    try {
+      const favorite = await Favorite.findOne({
+        where: {
+          UserId: helpers.getUser(req).id,
+          RestaurantId: req.params.restaurantId
+        }
+      })
 
-    callback({
-      btn: 'Add to Favorite',
-      btnClass: 'btn-primary favBtn',
-      favCount: restaurants.FavoritedUsers.length
-    })
+      if (!favorite) {
+        return callback({
+          status: 'error',
+          message:
+            "You can't remove the restaurant which is not in your favorite list"
+        })
+      }
+
+      await favorite.destroy()
+      const restaurant = await Restaurant.findByPk(req.params.restaurantId, {
+        include: { model: User, as: 'FavoritedUsers' }
+      })
+
+      callback({
+        status: 'success',
+        restaurantName: restaurant.name,
+        btn: 'Add to Favorite',
+        btnClass: 'btn-primary favBtn',
+        favCount: restaurant.FavoritedUsers.length
+      })
+    } catch (err) {
+      console.log(err)
+    }
   },
 
   likeRestaurant: async (req, res, callback) => {
@@ -252,7 +293,11 @@ const userService = {
       UserId: helpers.getUser(req).id,
       RestaurantId: req.params.restaurantId
     })
-    callback({ btn: 'Unlike', btnClass: 'btn-danger likeBtn' })
+    callback({
+      status: 'success',
+      btn: 'Unlike',
+      btnClass: 'btn-danger likeBtn'
+    })
   },
 
   unlikeRestaurant: async (req, res, callback) => {
@@ -263,7 +308,11 @@ const userService = {
       }
     })
     await like.destroy()
-    callback({ btn: 'Like', btnClass: 'btn-primary likeBtn' })
+    callback({
+      status: 'success',
+      btn: 'Like',
+      btnClass: 'btn-primary likeBtn'
+    })
   },
 
   getTopUser: async (req, res, callback) => {

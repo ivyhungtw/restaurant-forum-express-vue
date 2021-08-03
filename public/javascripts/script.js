@@ -17,19 +17,22 @@ const toggleBtn = async e => {
       ? await axios.post(url)
       : await axios.delete(url)
 
-    container.innerHTML = Handlebars.compile(
-      document.querySelector('#btn-template').innerHTML
-    )(response.data)
-
-    // Show restaurants' number of favorite in real time on top restaurants page
-    if (document.querySelector('.fav-count')) {
-      const favCountContainer =
-        favContainer.previousElementSibling.previousElementSibling
-          .previousElementSibling
-
-      favCountContainer.innerHTML = Handlebars.compile(
-        document.querySelector('#fav-count-template').innerHTML
+    if (response.data.status === 'success') {
+      console.log('----success----')
+      container.innerHTML = Handlebars.compile(
+        document.querySelector('#btn-template').innerHTML
       )(response.data)
+
+      // Show restaurants' number of favorite in real time on top restaurants page
+      if (document.querySelector('.fav-count')) {
+        const favCountContainer =
+          favContainer.previousElementSibling.previousElementSibling
+            .previousElementSibling
+
+        favCountContainer.innerHTML = Handlebars.compile(
+          document.querySelector('#fav-count-template').innerHTML
+        )(response.data)
+      }
     }
   } catch (err) {
     console.log(err)
