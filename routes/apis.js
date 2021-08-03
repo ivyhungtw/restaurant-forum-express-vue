@@ -74,19 +74,18 @@ router.get(
   authenticated,
   restController.getDashboard
 )
-
 router
-  .route('/favorite/:restaurantId')
+  .route('/restaurants/:restaurantId/favorites')
   .all(authenticated)
   .post(userController.addFavorite)
   .delete(userController.removeFavorite)
 router
-  .route('/like/:restaurantId')
+  .route('/restaurants/:restaurantId/likes')
   .all(authenticated)
   .post(userController.likeRestaurant)
   .delete(userController.unlikeRestaurant)
 router
-  .route('/following/:userId')
+  .route('/users/:userId/followships')
   .all(authenticated)
   .post(userController.addFollowing)
   .delete(userController.removeFollowing)
