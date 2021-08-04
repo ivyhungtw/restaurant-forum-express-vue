@@ -6,6 +6,7 @@ const Restaurant = db.Restaurant
 const Favorite = db.Favorite
 const Like = db.Like
 const Followship = db.Followship
+const { Op } = require('sequelize')
 
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
@@ -96,11 +97,26 @@ const userService = {
             {
               model: Restaurant,
               as: 'FavoritedRestaurants',
-              attributes: ['id', 'image']
+              attributes: ['id', 'image'],
+              where: {
+                id: {
+                  [Op.ne]: null
+                }
+              }
             },
             {
               model: Comment,
-              include: [{ model: Restaurant, attributes: ['id', 'image'] }]
+              include: [
+                {
+                  model: Restaurant,
+                  attributes: ['id', 'image'],
+                  where: {
+                    id: {
+                      [Op.ne]: null
+                    }
+                  }
+                }
+              ]
             }
           ],
           where: {
@@ -122,6 +138,7 @@ const userService = {
       })
 
       return callback({
+        status: 'success',
         userProfile: {
           id: userProfile.id,
           name: userProfile.name,
