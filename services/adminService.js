@@ -44,21 +44,15 @@ const adminService = {
     }
   },
   postRestaurant: async (req, res, callback) => {
-    const {
-      name,
-      tel,
-      address,
-      opening_hours,
-      description,
-      categoryId
-    } = req.body
+    const { name, tel, address, opening_hours, description, categoryId } =
+      req.body
     const { file } = req
     let img
     const errors = []
     const acceptedType = ['.png', '.jpg', '.jpeg']
 
-    if (!name || !tel || !address || !opening_hours || !description) {
-      errors.push({ message: 'All fields are required!' })
+    if (!name || !categoryId || !address || !description) {
+      errors.push({ message: 'Please fill out all required fields.' })
     }
 
     // Files stored in /temp through multer middleware will be removed in the future,
@@ -118,21 +112,15 @@ const adminService = {
     }
   },
   putRestaurant: async (req, res, callback) => {
-    const {
-      name,
-      tel,
-      address,
-      opening_hours,
-      description,
-      categoryId
-    } = req.body
+    const { name, tel, address, opening_hours, description, categoryId } =
+      req.body
     const { file } = req
     let img
     const acceptedType = ['.png', '.jpg', '.jpeg']
     const errors = []
 
-    if (!name || !tel || !address || !opening_hours || !description) {
-      errors.push({ message: 'All fields are required!' })
+    if (!name || !categoryId || !address || !description) {
+      errors.push({ message: 'Please fill out all required fields.' })
     }
 
     try {
@@ -194,6 +182,12 @@ const adminService = {
   deleteRestaurant: async (req, res, callback) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id)
+      if (!restaurant) {
+        return callback({
+          status: 'error',
+          message: 'You can not delete a restaurant that did not exist'
+        })
+      }
       await restaurant.destroy()
       callback({ status: 'success', message: '' })
     } catch (err) {

@@ -104,6 +104,7 @@ const restService = {
     }
 
     callback({
+      status: 'success',
       restaurant: restaurant.toJSON(),
       isFavorited,
       isLiked
@@ -139,7 +140,7 @@ const restService = {
         { model: User, as: 'FavoritedUsers', attributes: ['id'] }
       ]
     })
-    callback({ restaurant: restaurant.toJSON() })
+    callback({ status: 'success', restaurant: restaurant.toJSON() })
   },
 
   getTopRestaurant: async (req, res, callback) => {

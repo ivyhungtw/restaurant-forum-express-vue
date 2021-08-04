@@ -14,6 +14,7 @@ const upload = multer({ dest: 'temp/' })
 const authenticated = passport.authenticate('jwt', { session: false })
 
 const authenticatedAdmin = (req, res, next) => {
+  console.log('---- authenticatedAdmin ---', req.user)
   if (req.user) {
     if (req.user.isAdmin) {
       return next()
@@ -102,6 +103,7 @@ router.get('/users/:id/edit', authenticated, userController.editUser)
 router.post('/comments', authenticated, commentController.postComment)
 router.delete(
   '/comments/:id',
+  authenticated,
   authenticatedAdmin,
   commentController.deleteComment
 )
