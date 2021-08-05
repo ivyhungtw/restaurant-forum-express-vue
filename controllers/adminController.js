@@ -65,7 +65,9 @@ const adminController = {
   },
   toggleAdmin: (req, res) => {
     adminService.toggleAdmin(req, res, data => {
-      req.flash('successMsg', data['message'])
+      if (data['status'] === 'success') {
+        req.flash('successMsg', data['message'])
+      }
       res.redirect('/admin/users')
     })
   }

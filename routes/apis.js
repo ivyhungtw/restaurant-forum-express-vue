@@ -14,7 +14,6 @@ const upload = multer({ dest: 'temp/' })
 const authenticated = passport.authenticate('jwt', { session: false })
 
 const authenticatedAdmin = (req, res, next) => {
-  console.log('---- authenticatedAdmin ---', req.user)
   if (req.user) {
     if (req.user.isAdmin) {
       return next()
@@ -56,7 +55,7 @@ router.get(
   adminController.getUsers
 )
 router.put(
-  '/admin/users/:id/toggleAdmin',
+  '/admin/users/:id',
   authenticated,
   authenticatedAdmin,
   adminController.toggleAdmin

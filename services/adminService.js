@@ -197,7 +197,7 @@ const adminService = {
   getUsers: async (req, res, callback) => {
     try {
       const users = await User.findAll({ raw: true })
-      callback({ users, id: helpers.getUser(req).id })
+      callback({ status: 'success', users, id: helpers.getUser(req).id })
     } catch (err) {
       console.log(err)
     }
@@ -208,9 +208,12 @@ const adminService = {
       const adminId = helpers.getUser(req).id
 
       // Prevent admins from setting themselves as user
-      // if (adminId === user.id) {
-      //   return res.redirect('/admin/users')
-      // }
+      if (adminId === user.id) {
+        return callback({
+          status: 'error',
+          message: 'You can not set yourself as user'
+        })
+      }
 
       await user.update({ ...user, isAdmin: user.isAdmin ? 0 : 1 })
 
