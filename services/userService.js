@@ -85,46 +85,48 @@ const userService = {
 
   getUser: async (req, res, callback) => {
     try {
-      const userProfile = (
-        await User.findOne({
-          include: [
-            {
-              model: User,
-              as: 'Followers',
-              attributes: ['id', 'image']
-            },
-            { model: User, as: 'Followings', attributes: ['id', 'image'] },
-            {
-              model: Restaurant,
-              as: 'FavoritedRestaurants',
-              attributes: ['id', 'image'],
-              where: {
-                id: {
-                  [Op.ne]: null
-                }
-              }
-            },
-            {
-              model: Comment,
-              include: [
-                {
-                  model: Restaurant,
-                  attributes: ['id', 'image'],
-                  where: {
-                    id: {
-                      [Op.ne]: null
-                    }
+      let userProfile = await User.findOne({
+        include: [
+          {
+            model: User,
+            as: 'Followers',
+            attributes: ['id', 'image']
+          },
+          { model: User, as: 'Followings', attributes: ['id', 'image'] },
+          {
+            model: Restaurant,
+            as: 'FavoritedRestaurants',
+            attributes: ['id', 'image']
+          },
+          {
+            model: Comment,
+            include: [
+              {
+                model: Restaurant,
+                attributes: ['id', 'image'],
+                where: {
+                  id: {
+                    [Op.ne]: null
                   }
                 }
-              ]
-            }
-          ],
-          where: {
-            id: Number(req.params.id)
-          },
-          attributes: ['id', 'name', 'email', 'image']
+              }
+            ]
+          }
+        ],
+        where: {
+          id: Number(req.params.id)
+        },
+        attributes: ['id', 'name', 'email', 'image']
+      })
+
+      if (!userProfile) {
+        return callback({
+          status: 'error',
+          message: 'This user does not exist'
         })
-      ).toJSON()
+      }
+
+      userProfile = userProfile.toJSON()
 
       // Users can leave many comments on a restaurants,
       // but we wanna show restaurants commented by the user without duplication on the profile page
@@ -149,7 +151,8 @@ const userService = {
         commentRestaurants,
         followers: userProfile.Followers,
         followings: userProfile.Followings,
-        favRestaurants: userProfile.FavoritedRestaurants
+        favRestaurants: userProfile.FavoritedRestaurants,
+        isFollowed: userProfile.Followers.some(user => user.id === req.user.id)
       })
     } catch (err) {
       console.log(err)
@@ -222,7 +225,7 @@ const userService = {
         name: req.body.name,
         image: file ? img.data.link : user.image
       })
-      return callback({ userId })
+      return callback({ status: 'success', userId })
     } catch (err) {
       console.log(err)
     }
