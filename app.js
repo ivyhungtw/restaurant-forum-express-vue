@@ -1,5 +1,4 @@
 const express = require('express')
-// const handlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 const flash = require('connect-flash')
 const session = require('express-session')
@@ -12,7 +11,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 const path = __dirname + '/dist/'
 
-const helpers = require('./_helpers')
 require('./models')
 require('./utils/handlebars-helper')
 const passport = require('./config/passport')
