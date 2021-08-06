@@ -1,66 +1,124 @@
-# README
+# Restaurant Forum
 
-1. Fork
-2. git clone
-3. 更改專案名稱
+Restaurant Forum is a web app for users to explore restaurants. The backend is built with Node.js, Express, and mySQL and the frontend is built with Vue3.
 
-## 初始化
+🚀 Restaurant Forum is now live on Heroku, feel free to try it out: https://forum-express-vue.herokuapp.com/
 
-### Initialize
+You can use the default accounts below or register your own account to login:
 
 ```
-git remote add upstream https://github.com/ALPHACamp/forum-express-grading.git  # 建立上游連線
-
-### 切換環境
-
+email: root@example.com/user2@example.com
+password: 12345678
 ```
 
-export NODE_ENV=test # 切換到測試環境，如果在等號後加其他的字串，則會切到其他的環境
-echo $NODE_ENV # 印出目前使用的環境
+## Features
+
+Users and admin must log in before accessing any pages. Users can register an account by providing name, email, and password.
+
+After login, users can:
+
+- View all restaurants and filter them by category
+- View restaurant's detail page
+- View latest restaurants and comments
+- View users with most followers
+- Create comments for a restaurant
+- Save restaurants to their favorite list or remove them
+- Like and unlike restaurants
+- Follow and unfollow other users
+- View users' profile with information of their followers, followings, saved, and liked restaurants
+- Edit their own profile
+
+After login, admin can:
+
+- Create/Read/Update/Delete restaurants
+- Create/Read/Update/Delete categories
+- Update users' role
+- Delete users' comments
+
+## Prerequisites
+
+- [Git](https://git-scm.com/downloads)
+- [Vue3](https://v3.vuejs.org/)
+- [Node.js v14.15.1](https://nodejs.org/en/)
+- [Express](https://expressjs.com/)
+- [mySQL](https://www.mysql.com/)
+
+## Install Restaurant Forum
+
+#### Clone the repository locally
 
 ```
-
-### 執行測試
+$ git clone https://github.com/ivyhungtw/restaurant-forum-express-vue.git
 ```
 
-npm run test
+#### Install project dependencies
 
 ```
-
-<<<<<<< HEAD
-## 下載作業規格
-以 A17 為例
-
+$ cd restaurant-forum-express-vue
+$ npm install
 ```
 
-git checkout -b A17 # 開新分支
-git merge origin/A17-test # 下載作業規格
-npm run test # 直到綠燈全亮
+#### Add .env file
 
-git add .
-git commit -m "...."
+To properly use the app and login feature, make sure you have filled out the following information in .env file.
 
-```
-
-## 繳交作業
+You can register your own IMGUR client id on [IMGUR](https://api.imgur.com/oauth2/addclient).
 
 ```
+IMGUR_CLIENT_ID=SKIP
+JWT_SECRET=SKIP
+```
 
-git push origin A17 # 上傳本地進度
-||||||| c386de7
+## Use Restaurant Forum
 
-- 使用者可以註冊/登入/登出網站
-- 使用者可以在瀏覽所有餐廳與個別餐廳詳細資料
-- 在瀏覽所有餐廳資料時，可以用分類篩選餐廳
-- 使用者可以對餐廳留下評論
-- 使用者可以收藏餐廳
-- 使用者可以查看最新上架的 10 筆餐廳
-- 使用者可以查看最新的 10 筆評論
-- 使用者可以編輯自己的個人資料
-- 使用者可以查看自己評論過、收藏過的餐廳
-- 使用者可以追蹤其他的使用者
+#### Enter your MySQL Workbench password in config.json file
 
-## 共用帳號
+```
+{
+  "development": {
+    "username": "root",
+    "password": "<your_mysql_workbench_password>",
+    "database": "forum",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+```
 
-請一律設定一個共用的 root user
-root@example.com，登入密碼 12345678
+#### Create database in MySQL
+
+To create database for development and test, run the following syntax in MySQL Workbench.
+
+```
+drop database if exists forum;
+create database forum;
+```
+
+#### Use Sequelize CLI to create tables in database
+
+```
+$ npx sequelize db:migrate
+```
+
+#### Import seed data
+
+To have default users, categories, and restaurants set up, run the following script.
+
+```
+$ npm run seed
+```
+
+#### Start the app
+
+If you have installed [nodemon](https://www.npmjs.com/package/nodemon), run the following script.
+
+```
+$ npm run dev
+```
+
+or just run:
+
+```
+$ node app.js
+```
+
+The server will start running on http://localhost:3000/
