@@ -92,16 +92,13 @@ const restService = {
       helpers.getUser(req).id
     )
 
-    // Count unique page views to show on dashboard
-    if (!req.session.views[req.params.id]) {
-      req.session.views[req.params.id] = 1
+    // Count page views to show on dashboard
 
-      restaurant.viewCounts = restaurant.viewCounts
-        ? restaurant.viewCounts + 1
-        : 1
+    restaurant.viewCounts = restaurant.viewCounts
+      ? restaurant.viewCounts + 1
+      : 1
 
-      await restaurant.save()
-    }
+    await restaurant.save()
 
     callback({
       status: 'success',
