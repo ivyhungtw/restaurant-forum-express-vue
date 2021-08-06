@@ -49,7 +49,8 @@ const userController = {
         id: user.id,
         name: user.name,
         email: user.email,
-        isAdmin: user.isAdmin
+        isAdmin: user.isAdmin,
+        image: user.image
       }
     })
   },
