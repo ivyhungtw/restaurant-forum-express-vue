@@ -1,13 +1,16 @@
 const express = require('express')
-const handlebars = require('express-handlebars')
+// const handlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 const flash = require('connect-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
 const cors = require('cors')
+const history = require('connect-history-api-fallback')
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
+
+const path = __dirname + '/dist/'
 
 const helpers = require('./_helpers')
 require('./models')
@@ -18,15 +21,8 @@ const app = express()
 const port = process.env.PORT || 3000
 
 app.use(cors())
+app.use(history())
 
-app.engine(
-  'handlebars',
-  handlebars({
-    defaultLayout: 'main',
-    helpers: require('./config/handlebars-helpers')
-  })
-)
-app.set('view engine', 'handlebars')
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
@@ -34,23 +30,11 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 app.use(methodOverride('_method'))
-app.use('/upload', express.static(__dirname + '/upload'))
-app.use(express.static('public'))
-app.use(function (req, res, next) {
-  if (!req.session.views) {
-    req.session.views = {}
-  }
-  next()
-})
 
-app.use((req, res, next) => {
-  res.locals.successMsg = req.flash('successMsg')
-  res.locals.errorMsg = req.flash('errorMsg')
-  res.locals.warningMsg = req.flash('warningMsg')
-  res.locals.errors = req.flash('errors')
-  res.locals.userInput = req.flash('userInput')
-  res.locals.user = helpers.getUser(req)
-  next()
+app.use(express.static(path))
+
+app.get('/', (req, res) => {
+  res.sendFile(path + 'index.html')
 })
 
 app.listen(port, () => {
