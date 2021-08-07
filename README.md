@@ -1,5 +1,7 @@
 # Restaurant Forum
 
+![](/public/photos/restaurants.png)
+
 Restaurant Forum is a web app for users to explore restaurants. The backend is built with Node.js, Express, and mySQL and the frontend is built with Vue3.
 
 🚀 Restaurant Forum is now live on Heroku, feel free to try it out: https://forum-express-vue.herokuapp.com/
